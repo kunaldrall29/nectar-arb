@@ -1915,6 +1915,11 @@ export const miniMorphoAbi = [
   },
   {
     "type": "error",
+    "name": "RepayExceedsDebt",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "SafeERC20FailedOperation",
     "inputs": [
       {

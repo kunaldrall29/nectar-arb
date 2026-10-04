@@ -1,19 +1,25 @@
-Nectar is the liquidation liquidity network built for lending markets that need reliable execution when positions go underwater.
+<!-- section:overview ~22s -->
+Nectar is the liquidation liquidity network for lending markets that need reliable execution when collateral turns underwater.
 
-Our clear advantage is the funded, time-bounded bid that settles atomically inside the liquidation itself. Makers commit cash up front. Keepers consume the best quote in one transaction. Debt is repaid, collateral is delivered, and fees are recorded onchain.
+Our product hypothesis is simple and powerful: professional buyers post funded, time-bounded bids for distressed collateral, and those bids are consumed atomically inside the liquidation itself. One transaction repays debt, delivers collateral, and records fees. No hand-waving. No partial promises.
 
-Nectar grew out of the original Stellar and Soroban protocol, which received roughly seventy-five thousand dollars in grant support and went through a dedicated security audit. This new EVM testnet slice is a fresh implementation. It is not certified by that earlier audit, and we label mock lending and mock prices honestly in the product.
+<!-- section:markets ~28s -->
+On Markets you see every admitted venue, oracle status, and borrower positions moving from healthy to at-risk to liquidatable. This testnet slice uses mock lending and mock prices, clearly labeled, so operators can rehearse real execution paths without touching production systems.
 
-On the overview you see maker cash, active quotes, and executable opportunities across admitted markets. Nothing crosses chains. Each network stands on its own.
+<!-- section:liquidity ~45s -->
+Liquidity is where makers fund segregated cash accounts in the debt token, then publish a quote that reserves the full cash obligation onchain. Until that reservation is included, the bid is not executable capacity. Makers sign exact economics: collateral amount, maximum debt repayment, keeper compensation, and protocol fees.
 
-Markets shows our MiniMorpho-style demo venues with tokenized stock collateral. The testnet stress scenario drops mock oracle prices within labeled bounds so operators can rehearse real liquidation flows safely.
+Watch the flow: mint demo tokens from the faucet, approve and deposit maker cash, then register a funded quote scoped to a borrower position. That quote is now live inventory for keepers.
 
-In Liquidity, makers deposit debt token cash, publish a funded quote, and reserve the full obligation before the bid becomes executable. Withdrawals respect unreserved balances.
+<!-- section:stress ~22s -->
+The testnet stress scenario drops mock oracle prices within bounded limits, simulating a sharp move in tokenized stock collateral. Positions cross the liquidation threshold. Nectar's executor refuses stale or invalid prices; here the route stays actionable because the mock feed is fresh and labeled.
 
-Executions is where keepers and operators watch receipts: debt repaid, collateral delivered, keeper compensation, and protocol fees. Our keeper agent simulates every job, explains refusals, and submits the best eligible route.
+<!-- section:executions ~35s -->
+Our open keeper agent monitors the same state as the app, simulates each job, explains refusals, and submits the best eligible quote. The receipt shows debt repaid, collateral delivered to the maker, keeper fee paid, and protocol revenue, reconciled onchain.
 
-Analytics separates measured testnet outcomes from production metrics. We disclose team-operated demo liquidity. Founder-stated historical testnet volume on prior deployments exceeded one hundred forty-eight thousand dollars and continues to grow as we expand the product.
+<!-- section:analytics ~22s -->
+Analytics separates measured testnet outcomes from production metrics. Nectar's original Stellar and Soroban protocol received roughly seventy-five thousand dollars in grant support and completed a security audit. This new EVM deployment is a fresh implementation and is not certified by that audit.
 
-We will keep growing Nectar: more markets, more chains, and tighter integration with lending operators who need execution they can trust.
+Founder-stated testnet volume on prior deployments exceeded one hundred forty-eight thousand dollars and keeps growing. We will keep growing the product: more markets, more chains, and tighter integration with lending operators who need execution they can trust.
 
-Join us on Arbitrum Sepolia testnet and run the open keeper agent alongside the app.
+Join us on public testnet. Fund the network. Post bids. Execute liquidations atomically. That is Nectar.

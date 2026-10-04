@@ -11,3 +11,5 @@ contracts/broadcast/*/31337/
 backend/data/
 *.log
 .vercel
+*.tsbuildinfo
+web/test-results/

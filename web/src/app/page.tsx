@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type React from "react";
 import { computeAnalytics, formatUnitsExact, shortAddr } from "@nectar/core";
 import { useNetwork } from "@/lib/network-context";
 import { useChainState } from "@/lib/use-chain-state";
@@ -44,7 +45,7 @@ export default function OverviewPage() {
         <Stat label="Maker cash (funded)" value={`${formatUnitsExact(data.vault.fundedCash, data.vault.cashToken.decimals, 0)} ${data.vault.cashToken.symbol}`} sub={`${formatUnitsExact(data.vault.reservedCash, data.vault.cashToken.decimals, 0)} reserved`} />
         <Stat label="Active quotes" value={String(activeQuotes)} sub={`${data.markets.length} admitted markets`} />
         <Stat label="Positions" value={`${liq} liquidatable`} sub={`${atRisk} at-risk · ${data.positions.length} total`} />
-        <Stat label="Settlements" value={String(analytics.measured.settlements)} sub={`${formatUnitsExact(analytics.measured.recoveredDebt, data.vault.cashToken.decimals, 0)} debt recovered`} />
+        <Stat label="Settlements" value={String(analytics.measured.settlements)} sub={`${formatUnitsExact(analytics.measured.recoveredDebt, data.vault.cashToken.decimals, 0)} debt recovered`} data-testid="stat-settlements" />
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
         <div className="card p-5">
@@ -76,9 +77,18 @@ export default function OverviewPage() {
   );
 }
 
-function Stat({ label, value, sub }: { label: string; value: string; sub: string }) {
+function Stat({
+  label,
+  value,
+  sub,
+  ...rest
+}: {
+  label: string;
+  value: string;
+  sub: string;
+} & React.ComponentProps<"div">) {
   return (
-    <div className="card p-4">
+    <div className="card p-4" {...rest}>
       <div className="text-xs uppercase tracking-wide text-zinc-500">{label}</div>
       <div className="mt-1 text-xl font-semibold">{value}</div>
       <div className="text-xs text-zinc-500">{sub}</div>

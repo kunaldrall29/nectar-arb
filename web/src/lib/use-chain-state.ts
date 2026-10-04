@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createPublicClient, http } from "viem";
 import { useMemo } from "react";
 import { useNetwork } from "./network-context";
+import { clientRpcUrl } from "./rpc-url";
 
 export function useChainState() {
   const { net } = useNetwork();
@@ -12,8 +13,8 @@ export function useChainState() {
 
   const client = useMemo(() => {
     if (!d) return undefined;
-    return createPublicClient({ chain: net.chain, transport: http(net.chain.rpcUrls.default.http[0], { retryCount: 2 }) });
-  }, [net]);
+    return createPublicClient({ chain: net.chain, transport: http(clientRpcUrl(net), { retryCount: 2 }) });
+  }, [net, d]);
 
   const cache = useMemo(() => {
     if (!client || !d) return undefined;
@@ -31,7 +32,7 @@ export function useChainState() {
 export function usePublicClient() {
   const { net } = useNetwork();
   return useMemo(
-    () => createPublicClient({ chain: net.chain, transport: http(net.chain.rpcUrls.default.http[0], { retryCount: 2 }) }),
+    () => createPublicClient({ chain: net.chain, transport: http(clientRpcUrl(net), { retryCount: 2 }) }),
     [net],
   );
 }

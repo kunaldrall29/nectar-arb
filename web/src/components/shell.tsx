@@ -8,6 +8,8 @@ import { Activity, BarChart3, Droplets, LayoutDashboard, Settings, Store } from 
 import { useNetwork } from "@/lib/network-context";
 import { useChainState } from "@/lib/use-chain-state";
 import { formatUnitsExact } from "@nectar/core";
+import { isDemoMode } from "@/lib/demo-wallet";
+import { DemoWalletBadge } from "@/components/providers";
 
 const nav = [
   { href: "/", label: "Overview", icon: LayoutDashboard },
@@ -72,7 +74,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <span className="text-xs text-nectar-rose">{isError ? "RPC unavailable" : "Syncing…"}</span>
             )}
             {!net.deployment && <span className="text-xs text-zinc-500">No deployment on this network</span>}
-            <ConnectButton chainStatus="icon" accountStatus="address" showBalance={false} />
+            {isDemoMode ? <DemoWalletBadge /> : <ConnectButton chainStatus="icon" accountStatus="address" showBalance={false} />}
           </div>
         </header>
         <main className="flex-1 p-4 md:p-6">{children}</main>

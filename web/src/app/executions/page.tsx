@@ -81,13 +81,13 @@ export default function ExecutionsPage() {
               <th>Protocol fee</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody data-testid="receipts-table">
             {data.receipts.map((r) => {
               const m = data.markets.find((x) => x.marketKey === r.marketKey);
               const loanDec = m?.loanToken.decimals ?? 6;
               const colDec = m?.collateralToken.decimals ?? 18;
               return (
-                <tr key={r.transactionHash} className="border-t border-nectar-border/50">
+                <tr key={r.transactionHash} className="border-t border-nectar-border/50" data-testid="receipt-row">
                   <td className="py-2 font-mono text-xs">
                     <a href={explorerTx(net, r.transactionHash) ?? "#"} target="_blank" rel="noreferrer">
                       {r.transactionHash.slice(0, 10)}…
