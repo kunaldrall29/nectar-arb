@@ -1,107 +1,52 @@
 "use client";
 
-import { ChainNotice, Confirm, Money, useAction, useLiveData } from "@/components/Bits";
-import { shortAddr } from "@/lib/format";
-
-const LABELS: Record<string, string> = {
-  awaiting_signature: "Awaiting signature",
-  submitted: "Submitted",
-  included: "Included",
-  reverted: "Reverted",
-  rejected: "Rejected",
-};
+import { useEffect, useState } from "react";
+import { apiGet, type Receipt } from "@/lib/api";
 
 export default function ExecutionsPage() {
-  const { hidden, ws, data } = useLiveData();
-  const execute = useAction("execute");
-  const market = ws?.market;
-  const active = ws?.quotes.find((quote) => quote.status === "active");
+  const [receipts, setReceipts] = useState<Receipt[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    apiGet<{ receipts: Receipt[] }>("/v1/receipts")
+      .then((body) => setReceipts(body.receipts))
+      .catch((err: Error) => setError(err.message));
+  }, []);
   return (
     <>
       <h1>Executions</h1>
-      <p className="lede">
-        A broadcast is not a fill. Included means the local receipt succeeded. Reverted means the chain rejected the settlement and reserved cash stayed unless the quote itself expired.
-      </p>
-      <ChainNotice />
-      {hidden || !market || !ws ? null : (
-        <>
-          <section className="panel">
-            <h2>Run keeper job</h2>
-            {active ? (
-              <>
-                <p className="hint">
-                  Quote {active.reservationId} reserves <Money amount={active.cashOut} decimals={market.debtDecimals} symbol={market.debtSymbol} /> for borrower {shortAddr(active.borrower)}.
-                </p>
-                {execute.error && <p className="alert" role="alert">{execute.error}</p>}
-                <button className="solid" onClick={() => void execute.review({ reservationId: active.reservationId })}>
-                  Review liquidation
-                </button>
-              </>
-            ) : (
-              <div className="empty">
-                <strong>No active funded quote</strong>
-                Publish one from Liquidity. There is nothing for a keeper to submit.
-              </div>
-            )}
-          </section>
-          <section className="panel" style={{ marginTop: 12 }}>
-            <h2>Jobs</h2>
-            {(data?.jobs.length ?? 0) === 0 ? (
-              <div className="empty"><strong>No jobs in this session</strong>Awaiting signature, submitted, included, and reverted appear here after you review an action.</div>
-            ) : (
-              <div className="scroll">
-                <table>
-                  <thead>
-                    <tr><th>When</th><th>Kind</th><th>Status</th><th>Transaction</th><th>Reason</th></tr>
-                  </thead>
-                  <tbody>
-                    {data?.jobs.map((job) => (
-                      <tr key={job.id}>
-                        <td>{job.updatedAt.slice(11, 19)} UTC</td>
-                        <td>{job.kind}</td>
-                        <td><span className={`pill ${job.status === "included" ? "ok" : job.status === "reverted" || job.status === "rejected" ? "bad" : "neutral"}`}>{LABELS[job.status] ?? job.status}</span></td>
-                        <td className="num">{job.txHash ? shortAddr(job.txHash) : "—"}</td>
-                        <td>{job.reason ?? "—"}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </section>
-          <section className="panel" style={{ marginTop: 12 }}>
-            <h2>Receipts</h2>
-            <p className="hint">Measured from LiquidationSettled logs. Finality here is {ws.receipts[0]?.finality ?? "not yet observed"}, not Ethereum finality.</p>
-            {ws.receipts.length === 0 ? (
-              <div className="empty"><strong>No settlements</strong>An empty receipt list is not zero revenue and not a failed indexer if the chain read is live.</div>
-            ) : (
-              <div className="scroll">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Block</th><th className="num">Debt repaid</th><th className="num">Collateral</th><th className="num">Keeper</th><th className="num">Protocol</th><th className="num">Surplus</th><th className="num">Writeoff</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ws.receipts.map((receipt) => (
-                      <tr key={`${receipt.txHash}-${receipt.reservationId}`}>
-                        <td>{receipt.blockNumber}</td>
-                        <td className="num"><Money amount={receipt.debtRepaid} decimals={market.debtDecimals} symbol={market.debtSymbol} /></td>
-                        <td className="num"><Money amount={receipt.collateralDelivered} decimals={market.collateralDecimals} symbol={market.collateralSymbol} /></td>
-                        <td className="num"><Money amount={receipt.keeperCompensation} decimals={market.debtDecimals} symbol="" /></td>
-                        <td className="num"><Money amount={receipt.protocolFee} decimals={market.debtDecimals} symbol="" /></td>
-                        <td className="num"><Money amount={receipt.surplus} decimals={market.debtDecimals} symbol="" /></td>
-                        <td className="num"><Money amount={receipt.writeoff} decimals={market.debtDecimals} symbol="" /></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </section>
-          {execute.plan && <Confirm plan={execute.plan} busy={execute.busy} onClose={execute.close} onSubmit={() => void execute.submit()} />}
-        </>
-      )}
+      <p className="lede">Receipts from this chain. Amounts are integer base units.</p>
+      {error ? <p className="reason">{error}</p> : null}
+      <section className="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Tx</th>
+              <th>Route</th>
+              <th>Debt repaid</th>
+              <th>Keeper</th>
+              <th>Protocol</th>
+              <th>Surplus</th>
+            </tr>
+          </thead>
+          <tbody>
+            {receipts.map((receipt) => (
+              <tr key={receipt.txHash}>
+                <td className="mono">{receipt.txHash?.slice(0, 10)}…</td>
+                <td>{receipt.route === "1" ? "quote" : receipt.route === "2" ? "propAMM" : receipt.route}</td>
+                <td>{receipt.debtRepaid}</td>
+                <td>{receipt.keeperCompensation}</td>
+                <td>{receipt.protocolFee}</td>
+                <td>{receipt.surplus ?? "—"}</td>
+              </tr>
+            ))}
+            {receipts.length === 0 && !error ? (
+              <tr>
+                <td colSpan={6}>No executions yet. Run the funded-quote or propAMM scenario.</td>
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
+      </section>
     </>
   );
 }

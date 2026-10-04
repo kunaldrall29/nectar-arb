@@ -1,6 +1,7 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getAddress, isAddress, type Address } from "viem";
@@ -9,6 +10,12 @@ import { listJobs, openDb, publicJob, updateJob } from "./db.ts";
 import { gmxReference, officialDebt, robinhoodDeployment } from "./reference.ts";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
+const peekFile = process.env.MANIFEST ?? path.join(root, "deployments/local.json");
+const peek = JSON.parse(fs.readFileSync(peekFile, "utf8")) as { protocol?: string };
+if (peek.protocol === "evm-v1") {
+  const { startProtocolServer } = await import("./protocolServer.ts");
+  await startProtocolServer();
+} else {
 const db = openDb(path.join(root, "api/data/nectar.db"));
 const runtime = createRuntime(db);
 const manifest = loadManifest();
@@ -282,3 +289,4 @@ const port = Number(process.env.PORT ?? 8787);
 serve({ fetch: app.fetch, port, hostname: "0.0.0.0" }, () => {
   console.log(`nectar api listening on ${port} chain ${manifest.chainId}`);
 });
+}

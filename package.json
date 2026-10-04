@@ -1,0 +1,21 @@
+{
+  "name": "nectar",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "contracts:build": "forge build --root packages/contracts",
+    "contracts:test": "forge test --root packages/contracts && forge test --root contracts",
+    "local:bootstrap": "node scripts/bootstrap.mjs",
+    "scenario:run": "tsx scripts/scenario.mjs",
+    "env:check": "node scripts/env-check.mjs",
+    "dev": "node scripts/dev.mjs",
+    "docs:build": "pnpm --filter nectar-docs build",
+    "verify": "node scripts/verify.mjs",
+    "deploy:contracts": "node scripts/deploy.mjs"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "viem": "^2.38.6"
+  }
+}

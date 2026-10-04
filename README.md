@@ -1,89 +1,71 @@
-# Nectar testnet prototype
+# Nectar
 
-Hackathon slice of [Nectar](https://github.com/): funded, time-bounded liquidation bids that settle debt and collateral atomically.
+Funded liquidity for onchain liquidations. One product, two chains. Choosing a chain changes the environment. It does not create a balance that can be spent on the other chain.
 
-**Scope:** R1 rehearsal. One lending market, which this repository deploys itself. It is a Nectar rehearsal fixture, not Morpho Blue. The live demo session is local Anvil standing in for Arbitrum Sepolia (chain id 421614), which is not funded yet. Robinhood Chain testnet (chain id 46630) has a separate rehearsal deployment recorded in `deployments/robinhood-testnet.json`. The app does not treat that cash as spendable on the connected chain. Arbitrum Sepolia itself is not deployed.
+Customers are lending operators and vault curators. Makers buy collateral and bear inventory risk. Keepers earn the compensation declared in the job and pay their own failed gas. Borrowers stay under the lending protocol's rules.
 
-**Not audited.** The EVM contracts are a new implementation. Earlier Stellar / Soroban liquidation work, including a Stellar grant, does not certify these contracts. Do not describe them as production-ready.
+There is no native token, no new lending protocol, and no public pooled-yield vault.
 
-## What works
+This repository is the EVM tree (`kunaldrall29/nectar-arb`). Stellar contracts are not in this tree. A $75,000 Stellar Community Fund grant is project history only. It is not an EVM audit, an EVM revenue figure, or evidence of product-market fit.
 
-- Maker escrow: deposit, reserve on quote registration, release after expiry, withdraw only unreserved cash. Makers cannot touch each other's balances.
-- EIP-712 single-fill quotes. Registration reserves the full `cashOut` or reverts. Quotes cannot be cancelled before the 120 second maximum lifetime. Execution at or after `validUntil` reverts.
-- Rehearsal market: open a position, drop the mock price, liquidate by repaying debt and seizing a deterministic collateral amount.
-- Executor: one transaction consumes the quote, repays the market from escrow, delivers collateral to the maker's recipient, and pays the signed keeper fee, protocol fee, and surplus. Any failed check reverts the whole transaction.
-- Pause guardian: pauses new reservations and executions. Unreserved withdrawals still work.
-- Testnet ERC-20s `nUSD` (6 decimals) and `nSTK` (18 decimals) with a public faucet mint. They are not USDC or a stock token.
-- API reads chain state and indexes settlement logs. Amounts are decimal strings in base units.
-- Web app: Overview, Markets, Liquidity, Executions, Analytics, Settings. Testnet is labeled on every screen. Empty, unavailable, and zero-capacity states are separate. Analytics shows only events from this deployment.
+**Not audited.**
 
-The settlement fixture used by tests and the demo quote is 10,000 debt units repaid, 50 keeper, 20 protocol fee, 70 surplus, summing to a cash out of 10,140. A cash out of 10,040 fails.
+## Status
 
-## Local demo
+| Surface | State | Evidence |
+| --- | --- | --- |
+| Protocol modules | Implemented and tested | `packages/contracts`. `forge test --root packages/contracts` covers unit, fuzz, and invariant tests, including repay 10000 / cash 10140 / keeper 50 / protocol 20 / surplus 70. |
+| Rehearsal contracts | Kept | `contracts/` still builds and its existing Foundry tests still pass. |
+| Local Anvil (31337) | Working | `pnpm local:bootstrap` writes `deployments/protocol-local.json`. Funded-quote tx `0x8cc2ad61c2902b37a15b06f04567c0fce3b2eb99eaca74b08d8c036e036a3196` (debt 10000, surplus 70). PropAMM tx `0xf54d844bd1b1c715928ee5fc98f3c940e099f5521453a18e8076791254eaa742` (debt 10000, surplus 514). |
+| Robinhood Chain testnet (46630) | Rehearsal only | `deployments/robinhood-testnet.json`. Escrow `0xa91112a940eaC477e114c6Ed90d35F108693999a`. Liquidation `0x6d69978efa2ffffee2a4e442000ea6a85e1456e1eb9c2d54b452f8ad305333f1`. That bytecode is the earlier rehearsal, not the modules in `packages/contracts`. |
+| Arbitrum Sepolia (421614) | Blocked | Deployer `0x031e038aeba717714dacC95F16d03234d722bCBb` had 0 wei on `https://sepolia-rollup.arbitrum.io/rpc`. `pnpm deploy:contracts --network arbitrum-sepolia` prints `STILL ZERO` and does not write addresses. |
+| API | Local SQLite | `/health`, `/v1/markets`, `/v1/quotes`, `/v1/receipts`. Amounts are integer strings. Docker is not available, so Postgres is not running. |
+| Web | Local | `pnpm dev` serves the app on port 3000 against the local API. `https://nectar-network.vercel.app` already exists and still rewrites to a local API. No new public API URL is claimed. |
+| Docs | Builds | `pnpm docs:build` (Docusaurus 3). |
 
-Requires Foundry and Node 22.
+The lab lending venue is **Nectar Sandbox Morpho**. It pins the upstream Morpho Blue liquidation callback order and is not an official Morpho deployment.
 
-```bash
-./scripts/dev-up.sh
-```
+Official Paxos USDG, for reads, 6 decimals:
 
-That starts Anvil (chain id 31337), deploys the rehearsal if the escrow has no code, and runs the API on port 8787 and the web app on port 3000.
+- Robinhood testnet `0x7E955252E15c84f5768B83c41a71F9eba181802F`
+- Arbitrum Sepolia `0xFFC95faa3d63Cde504a05B567C600B78C0b41892`
 
-The web app's working signer is the **local rehearsal signer** (Foundry's public Anvil account 1). It is not a production key. The API refuses to use it unless the RPC chain id is 31337. Account 2 is the keeper. Both are unlocked development accounts.
+The lab debt token is nUSD. It is not USDG.
 
-Open http://127.0.0.1:3000. The environment pill says testnet and local Anvil. The Robinhood filter omits that chain's balances because this session is not connected to it. Connect wallet uses an injected browser wallet when one exists. WalletConnect is not configured.
+## Local commands
 
-A fresh deploy seeds one completed settlement (self-operated, visible in Analytics) and leaves a second borrower liquidatable for the live quote.
-
-## Arbitrum Sepolia
-
-Deployer address to fund (no private key in this file):
-
-See `DEPLOYER_ADDRESS.txt`.
+Requires Foundry, Node 22, and pnpm.
 
 ```bash
-./scripts/deploy-sepolia.sh
+pnpm install --frozen-lockfile
+pnpm contracts:build
+pnpm contracts:test
+pnpm local:bootstrap
+pnpm scenario:run --network local --scenario funded-quote
+pnpm scenario:run --network local --scenario propamm
+pnpm dev
 ```
 
-The script reads `.secrets/deployer.key`, which is gitignored. A successful broadcast writes `deployments/arbitrum-sepolia.json`. Point the API at that manifest and the public RPC:
+Also:
 
 ```bash
-RPC_URL=https://sepolia-rollup.arbitrum.io/rpc \
-MANIFEST=deployments/arbitrum-sepolia.json \
-npm start --prefix api
+pnpm env:check
+pnpm docs:build
+pnpm verify
+pnpm deploy:contracts --network arbitrum-sepolia
+pnpm deploy:contracts --network robinhood-testnet
 ```
 
-Automatic demo signing stays disabled on Sepolia. Use a wallet on chain id 421614. This prototype's one-click signer is Anvil-only.
+`pnpm dev` prints `http://127.0.0.1:3000` and `http://127.0.0.1:8787/health`. The one-click signer works only when the RPC chain id is 31337. Before a signature, the quote screen shows network, asset, amount, destination, expiry, and fee.
 
-If the deployer has no Sepolia ETH, the command above is the deploy path the moment it does. Public faucets checked for this prototype required a browser captcha or a mainnet balance, so no Sepolia deployment is claimed unless `deployments/arbitrum-sepolia.json` exists.
+## Layout
 
-## Robinhood Chain testnet
+- `packages/contracts` — MarketRegistry, QuoteEscrow, NectarExecutor, MorphoBlueAdapter, Nectar Sandbox Morpho, PropAMM, RiskGuard, external swap adapter
+- `contracts` — earlier rehearsal Foundry project, still tested
+- `packages/sdk` — EIP-712 types, ABIs, keeper submit notes
+- `packages/worker` — in-flight transaction recovery
+- `api` — Hono API
+- `web` — Next.js app
+- `apps/docs` — Docusaurus
 
-`deployments/robinhood-testnet.json` records a rehearsal deployment on chain id 46630. RPC `https://rpc.testnet.chain.robinhood.com`. It is the same fixture, not production stock-collateral settlement, and it is not audited. The local demo API does not read that chain.
-
-## Tests
-
-```bash
-cd contracts && forge test
-```
-
-## Sponsor and partner technologies
-
-Only integrations that the code actually calls:
-
-- **OpenZeppelin Contracts v5.6.1** — `ReentrancyGuard`, `Pausable`, `Ownable2Step`, `SafeERC20`, and `EIP712` in the Solidity sources. The Robinhood Chain testnet addresses were deployed before this change and were not redeployed, so that bytecode is the earlier build.
-- **Paxos USDG** — official debt asset reads. Robinhood testnet `0x7E955252E15c84f5768B83c41a71F9eba181802F` and Arbitrum Sepolia `0xFFC95faa3d63Cde504a05B567C600B78C0b41892`. Both return symbol USDG and 6 decimals. Rehearsal debt remains nUSD.
-- **GMX** — `GET /v1/reference/gmx` fetches `https://arbitrum-api.gmxinfra.io/prices/tickers` and the Markets screen shows `tokenAddress`, `tokenSymbol`, `minPrice`, `maxPrice`, `updatedAt`, and `timestamp` as Arbitrum One reference data, not the testnet fill.
-- **ZeroDev** — Settings builds a Kernel account client with `@zerodev/sdk` and `@zerodev/ecdsa-validator` against project `61016d2a-e0df-4350-929c-d5f2110700d1` and bundler `https://rpc.zerodev.app/api/v3/61016d2a-e0df-4350-929c-d5f2110700d1/chain/421614`.
-
-Fhenix CoFHE is not listed. `@cofhe/sdk` does not run a local encrypt/decrypt mock in this environment, and the app does not invent ciphertext. Dune is not listed. There is no `DUNE_API_KEY`. `analytics/queries/nectar_settlements.sql` is not executed.
-
-Brand assets are the official mark, compact mark, lockup, and app icons from https://nectarnetwork.fun/media-kit. Canvas `#0d0f12`, accent `#16f3a9`, Syne and DM Mono.
-
-## Honesty notes
-
-- Combined nUSD figures in Overview are a rehearsal mark with a timestamp, not a market price and not a cross-chain balance.
-- Analytics does not invent production volume.
-- Keeper allowlisting is off and disclosed. The executor still enforces the quote.
-- Reorg reconciliation beyond "chain head moved backwards, rebuild logs" is not implemented.
-- No Aave adapter, no AMM route, no EIP-1271 wallets, no timelocked policy changes, no organization accounts.
+OpenZeppelin Contracts v5.6.1 is vendored at `contracts/lib/openzeppelin-contracts`.

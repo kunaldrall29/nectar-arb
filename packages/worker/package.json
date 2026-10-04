@@ -1,0 +1,5 @@
+{
+  "name": "@nectar/worker",
+  "private": true,
+  "type": "module"
+}

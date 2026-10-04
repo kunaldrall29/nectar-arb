@@ -15,9 +15,13 @@ broadcast/
 *.pem
 coverage/
 *.log
-api/data/*.db
-api/data/*.json
+api/data/
+deployments/protocol-local.json
+deployments/receipts/
+deployments/arbitrum-sepolia.status.json
 web/.next/
+apps/docs/build/
+apps/docs/.docusaurus/
 .vercel
 playwright-report/
 test-results/
