@@ -1,0 +1,22 @@
+{
+  "name": "@nectar/api",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "demo:keeper": "tsx src/demo-keeper.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.7",
+    "@nectar/shared": "0.1.0",
+    "hono": "^4.6.3",
+    "viem": "^2.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.4",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
+  }
+}

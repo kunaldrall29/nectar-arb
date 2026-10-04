@@ -1,0 +1,13 @@
+{
+  "name": "nectar-arb",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/shared"
+  ],
+  "scripts": {
+    "build": "npm run build -w @nectar/web && npm run build -w @nectar/api",
+    "dev": "npm run dev -w @nectar/api & npm run dev -w @nectar/web",
+    "test:contracts": "cd packages/contracts && forge test"
+  }
+}

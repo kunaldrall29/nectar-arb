@@ -1,0 +1,30 @@
+{
+  "release": "nectar-r1-testnet-slice",
+  "scope": "Hackathon slice: Arbitrum Sepolia chain-id rehearsal on local Anvil (421614). Robinhood Chain testnet config stubbed; production Morpho adapters pending admission.",
+  "networks": [
+    {
+      "name": "Arbitrum Sepolia (local rehearsal)",
+      "chainId": 421614,
+      "rpcUrl": "http://127.0.0.1:8545",
+      "status": "active",
+      "contracts": {
+        "quoteEscrow": "0x0dcd1bf9a1b36ce34237eeafef220932846bcd82",
+        "nectarExecutor": "0x0b306bf915c4d645ff596e518faf3f9669b97016",
+        "marketRegistry": "0x9a676e781a523b5d0c0e43731313a708cb607508",
+        "demoAdapter": "0x3aa5ebb10dc797cac828524e59a333d0a371443c",
+        "debtToken": "0x9a9f2ccfde556a7e9ff0848998aa4a0cfd8863ae",
+        "collateralToken": "0x68b1d87f95878fe05b998f19b66f4baba5de1aed"
+      },
+      "marketKey": "0x41a1a2ff34fc2b68c63795f2802766a25f52755edc077de107e86b4e44938648",
+      "keeperAllowlist": false,
+      "deployedAt": "2026-10-04"
+    },
+    {
+      "name": "Robinhood Chain Testnet",
+      "chainId": 46630,
+      "status": "planned",
+      "note": "Bytecode-ready; deploy with RH testnet RPC when credentials and USDG test fixtures are pinned."
+    }
+  ],
+  "publicTestnetFundingAddress": "0x8A19F3EfB8402892334393b35282586e617b80f6"
+}

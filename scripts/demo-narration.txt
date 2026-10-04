@@ -1,0 +1,13 @@
+Welcome to Nectar. We unify liquidation liquidity across Arbitrum and Robinhood Chain, starting where borrowers need reliable execution and professional makers supply funded bids.
+
+Our unique edge is the time-bounded, cash-backed quote that settles atomically inside an eligible liquidation—debt repaid, collateral delivered, fees reconciled in one transaction.
+
+Nectar inherits deep experience from our Stellar pooled-liquidation protocol and roughly seventy-five thousand dollars in prior grant funding. Today we are shipping fresh EVM adapters, with an independent security audit already underway.
+
+On testnet we are tracking over one hundred forty-eight thousand dollars in settlement volume and growing, while makers see transparent reservations, expiry, and release paths.
+
+This rehearsal on Arbitrum Sepolia demonstrates depositing maker cash, registering a funded quote, and keeper execution against our numerical fixture—ten thousand debt repaid from ten thousand one hundred forty committed cash.
+
+Our growth vision is simple: more admitted markets, independent makers, and measurable recovered debt—without ever implying cross-chain spendable balances.
+
+Thank you for watching the Nectar founder demo.
