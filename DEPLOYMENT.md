@@ -70,7 +70,15 @@ Amounts are decimal strings in base units. Market/receipt responses include `cha
 
 ## Frontend → deployment
 
-The app reads `deployments/*.json` from the repo root (file-traced on Vercel). No user RPC config is required for routine reads.
+The app imports `deployments/*.json` into the Next bundle. No user RPC config is required for routine reads.
+
+Anonymous Vercel preview: https://temporary-snappy-azure-uta62tw.vercel.app  
+Claim: https://vercel.com/claim-deployment?code=0eaba89b-a97c-480e-8540-612839092d0a
+
+```bash
+npx vercel deploy --temporary --yes --non-interactive   # repo root
+npx vercel --yes --prod                                 # after login / VERCEL_TOKEN
+```
 
 ## Compiler pin
 

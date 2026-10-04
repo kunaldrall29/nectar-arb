@@ -56,14 +56,22 @@ After funding the deployer:
 
 ## Vercel
 
+Public anonymous preview (claim to keep; expires if unclaimed):
+
+**https://temporary-snappy-azure-uta62tw.vercel.app**
+
+Claim: https://vercel.com/claim-deployment?code=0eaba89b-a97c-480e-8540-612839092d0a
+
+This URL serves the workspace **and** `/api/v1` (also rewritten at `/v1/*`). Arbitrum Sepolia is shown as `awaiting_gas`. Robinhood Chain Testnet is `monitored`. Anvil is not listed on Vercel. Receipts appear after a funded testnet deploy.
+
 ```bash
-cd apps/web
-npx vercel --yes
-# with a token:
-# VERCEL_TOKEN=… npx vercel --yes --prod
+# from repo root — anonymous / claimable
+npx vercel deploy --temporary --yes --non-interactive
+# stable production (needs VERCEL_TOKEN or vercel login)
+npx vercel --yes --prod
 ```
 
-`VERCEL_TOKEN` was not present in this environment. `npx vercel deploy --temporary` was attempted; login is required to publish a stable production URL. The Next app already hosts `/api/v1` so a successful Vercel deploy is a live workspace, not a dead UI.
+No `VERCEL_TOKEN` was present in this environment, so there is no durable production alias yet.
 
 Local app: `npm run dev` → http://localhost:3000
 

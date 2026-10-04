@@ -1,0 +1,7 @@
+{
+  "framework": "nextjs",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build --workspace=@nectar/web",
+  "outputDirectory": "apps/web/.next",
+  "rewrites": [{ "source": "/v1/:path*", "destination": "/api/v1/:path*" }]
+}
