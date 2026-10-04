@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-nectar-bg text-zinc-100 antialiased;
+}
+
+a {
+  @apply text-nectar-amber hover:underline;
+}
+
+.card {
+  @apply rounded-xl border border-nectar-border bg-nectar-panel/80 backdrop-blur;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition;
+}
+
+.btn-primary {
+  @apply btn bg-nectar-amber text-black hover:bg-amber-300 disabled:opacity-40;
+}
+
+.btn-ghost {
+  @apply btn border border-nectar-border bg-transparent hover:bg-white/5 disabled:opacity-40;
+}
+
+.input {
+  @apply w-full rounded-lg border border-nectar-border bg-black/30 px-3 py-2 text-sm outline-none focus:border-nectar-amber/60;
+}
+
+.badge {
+  @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+}
