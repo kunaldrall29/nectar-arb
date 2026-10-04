@@ -61,7 +61,7 @@ export function deployments(): Deployment[] {
       mockLabeled: true,
     });
   }
-  if (anvil) list.push(anvil);
+  if (anvil && !process.env.VERCEL) list.push(anvil);
   return list;
 }
 

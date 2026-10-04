@@ -16,5 +16,8 @@
   },
   "dependencies": {
     "viem": "2.23.2"
+  },
+  "devDependencies": {
+    "playwright-core": "^1.63.0"
   }
 }

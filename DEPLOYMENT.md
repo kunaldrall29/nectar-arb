@@ -74,4 +74,4 @@ The app reads `deployments/*.json` from the repo root (file-traced on Vercel). N
 
 ## Compiler pin
 
-Solidity `0.8.24`, optimizer 200 runs, `via_ir = true`, Foundry `1.8.4`, `forge-std` v1.17.0, Next `15.1.6`, viem `2.23.2`, wagmi `2.14.11`.
+Solidity `0.8.24`, optimizer 200 runs, `via_ir = true`, Foundry `1.8.4`, `forge-std` v1.17.0, Next `15.1.9`, viem `2.23.2`, wagmi `2.14.11`.

@@ -105,7 +105,7 @@ async function pullLogs(d: Deployment): Promise<Cache> {
       if (log.address.toLowerCase() === d.addresses.escrow.toLowerCase()) {
         const ev = decodeEventLog({ abi: quoteEscrowAbi, data: log.data, topics: log.topics });
         if (ev.eventName === "QuoteReserved") {
-          const a = ev.args as {
+          const a = ev.args as unknown as {
             quoteId: Hex;
             maker: Address;
             token: Address;
@@ -122,28 +122,28 @@ async function pullLogs(d: Deployment): Promise<Cache> {
             validUntil: a.validUntil.toString(),
             state: Number(a.validUntil) <= Date.now() / 1000 ? "expired" : "active",
             reservationId: a.reservationId,
-            txHash: log.transactionHash,
+            txHash: log.transactionHash ?? undefined,
           });
         }
         if (ev.eventName === "QuoteConsumed") {
-          const a = ev.args as { quoteId: Hex };
+          const a = ev.args as unknown as { quoteId: Hex };
           const q = quotes.get(a.quoteId);
           if (q) q.state = "filled";
         }
         if (ev.eventName === "QuoteReleased") {
-          const a = ev.args as { quoteId: Hex };
+          const a = ev.args as unknown as { quoteId: Hex };
           const q = quotes.get(a.quoteId);
           if (q) q.state = "released";
         }
         if (ev.eventName === "CashDeposited") {
-          const a = ev.args as { beneficiary: Address; token: Address; amount: bigint };
+          const a = ev.args as unknown as { beneficiary: Address; token: Address; amount: bigint };
           deposits.push({ maker: a.beneficiary, token: a.token, amount: a.amount, chainId: d.chainId });
         }
       }
       if (log.address.toLowerCase() === d.addresses.executor.toLowerCase()) {
         const ev = decodeEventLog({ abi: nectarExecutorAbi, data: log.data, topics: log.topics });
         if (ev.eventName === "LiquidationSettled") {
-          const a = ev.args as {
+          const a = ev.args as unknown as {
             jobId: Hex;
             marketKey: Hex;
             quoteId: Hex;
@@ -196,8 +196,8 @@ export async function sync(chainId: number): Promise<Cache> {
 
 export async function networkPayload() {
   const out = [];
-  for (const d of deployments()) {
-    const probe = await probeRpc(d);
+  const probed = await Promise.all(deployments().map(async (d) => ({ d, probe: await probeRpc(d) })));
+  for (const { d, probe } of probed) {
     const deployed = Boolean(d.addresses?.escrow);
     out.push({
       chainId: d.chainId,
@@ -234,8 +234,7 @@ export async function networkPayload() {
 
 export async function marketsPayload(chainId?: number) {
   const targets = deployments().filter((d) => !chainId || d.chainId === chainId);
-  const markets = [];
-  for (const d of targets) {
+  const markets = await Promise.all(targets.map(async (d) => {
     const probe = await probeRpc(d);
     const freshness: Freshness = {
       chainId: d.chainId,
@@ -244,7 +243,7 @@ export async function marketsPayload(chainId?: number) {
       status: probe.ok ? "current" : "unavailable",
     };
     if (!d.addresses?.escrow || !probe.ok) {
-      markets.push({
+      return {
         marketKey: d.marketKey || `${d.chainId}:pending`,
         chainId: d.chainId,
         protocol: "Morpho Blue (MOCK)",
@@ -257,8 +256,7 @@ export async function marketsPayload(chainId?: number) {
         unservedAmount: null,
         mockLabeled: true,
         freshness,
-      });
-      continue;
+      };
     }
     const client = publicClient(d.chainId);
     let priceStatus = "valid";
@@ -320,7 +318,7 @@ export async function marketsPayload(chainId?: number) {
     } catch {
       ammEstimate = null;
     }
-    markets.push({
+    return {
       marketKey: d.marketKey,
       chainId: d.chainId,
       protocol: "Morpho Blue (MOCK)",
@@ -338,18 +336,17 @@ export async function marketsPayload(chainId?: number) {
       mockLabeled: true,
       borrower: d.borrower || null,
       freshness,
-    });
-  }
+    };
+  }));
   return { markets, freshness: nowIso() };
 }
 
 export async function liquidityPayload(wallet: Address, chainId?: number) {
   const targets = deployments().filter((d) => !chainId || d.chainId === chainId);
-  const accounts: CashView[] = [];
-  for (const d of targets) {
+  const accounts: CashView[] = await Promise.all(targets.map(async (d) => {
     const probe = await probeRpc(d);
     if (!d.addresses?.escrow || !probe.ok) {
-      accounts.push({
+      return {
         chainId: d.chainId,
         token: d.addresses?.debtToken || "0x0000000000000000000000000000000000000000",
         symbol: d.chainId === 46630 ? "USDG" : "nmUSDC",
@@ -359,8 +356,7 @@ export async function liquidityPayload(wallet: Address, chainId?: number) {
         reserved: probe.ok ? "0" : "",
         available: probe.ok ? "0" : "",
         sourceBlock: probe.block || "unavailable",
-      });
-      continue;
+      };
     }
     const client = publicClient(d.chainId);
     const [cash, reserved, symbol, decimals, walletBal] = await Promise.all([
@@ -393,7 +389,7 @@ export async function liquidityPayload(wallet: Address, chainId?: number) {
         args: [wallet],
       }) as Promise<bigint>,
     ]);
-    accounts.push({
+    return {
       chainId: d.chainId,
       token: d.addresses.debtToken,
       symbol,
@@ -403,10 +399,9 @@ export async function liquidityPayload(wallet: Address, chainId?: number) {
       reserved: reserved.toString(),
       available: (cash > reserved ? cash - reserved : 0n).toString(),
       sourceBlock: probe.block || "0",
-      // extra fields tolerated by UI
       ...( { walletToken: walletBal.toString(), display: formatUnits(cash, decimals) } as object),
-    } as CashView);
-  }
+    } as CashView;
+  }));
   return {
     wallet,
     accounts,

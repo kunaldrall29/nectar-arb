@@ -13,9 +13,9 @@
   --bad: #ef6f62;
   --info: #8ec4d4;
   --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
-  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --sans: "IBM Plex Sans", "Segoe UI", sans-serif;
-  --display: "Fraunces", "Times New Roman", serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --sans: ui-sans-serif, system-ui, "Segoe UI", sans-serif;
+  --display: ui-serif, Georgia, "Times New Roman", serif;
 }
 
 * { box-sizing: border-box; }

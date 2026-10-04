@@ -57,10 +57,17 @@ After funding the deployer:
 ## Vercel
 
 ```bash
-npx vercel --yes --cwd apps/web
+cd apps/web
+npx vercel --yes
+# with a token:
+# VERCEL_TOKEN=… npx vercel --yes --prod
 ```
 
-If `VERCEL_TOKEN` is present, a production deploy is attempted. The Next app hosts the read APIs and indexer so the public URL is not a dead UI.
+`VERCEL_TOKEN` was not present in this environment. `npx vercel deploy --temporary` was attempted; login is required to publish a stable production URL. The Next app already hosts `/api/v1` so a successful Vercel deploy is a live workspace, not a dead UI.
+
+Local app: `npm run dev` → http://localhost:3000
+
+Founder demo (voiced): `/opt/cursor/artifacts/nectar_founder_demo_aria_voiceover.mp4`
 
 ## Layout
 
@@ -76,3 +83,13 @@ scripts/            Deploy, seed, local demo
 ## Tests
 
 Foundry covers T01–T11, T14, T16, T17, T22, T23, T24 and a cash-conservation fuzz (256 runs). Numerical fixture: debt 10000 + keeper 50 + protocol 20 + surplus 70 = cashOut 10140. A 10040 cashOut fails.
+
+Local Anvil e2e (see `deployments/local-e2e.json` and `deployments/anvil.json`):
+
+| Step | Tx |
+|---|---|
+| Deposit | `0x2971fc80aa8a65ff3b2e0217381d87913118fd6fe6406143b10127b13f50bf20` |
+| Register quote | `0x39d6fadb1e18c7e5b8ec304aea9c7535b5d79f127b7665125cfea23455c2a9d0` |
+| executeJob | `0x810884c9fe732edea4905d71b275fc82224109a22e4978648c33db230859c61d` |
+
+Escrow `0xc4f502b7534fa9918bb84fec4890e68a85f712f6` · Executor `0x6bdfc44fd27e2d66d994bb4f92c3a0616f4abcb2`

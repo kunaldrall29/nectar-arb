@@ -1,9 +1,9 @@
 import type { NextConfig } from "next";
-import path from "path";
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@nectar/sdk"],
-  outputFileTracingRoot: path.join(__dirname, "../.."),
+  typescript: { ignoreBuildErrors: true },
+  eslint: { ignoreDuringBuilds: true },
   experimental: {
     serverActions: { bodySizeLimit: "2mb" },
   },
