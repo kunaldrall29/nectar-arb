@@ -1,0 +1,24 @@
+{
+  "network": "testnet",
+  "networkPassphrase": "Test SDF Network ; September 2015",
+  "rpcUrl": "https://soroban-testnet.stellar.org",
+  "horizonUrl": "https://horizon-testnet.stellar.org",
+  "deployer": "GATRVHTBT47FDWB6U4L3FQQXS5C7WSXIBKDVEC3DNA55GIF7BRUITILP",
+  "marketKey": "stellar-morpho-aapl-1",
+  "contracts": {
+    "debtToken": "CBXGGXFEJIGR2CNWEFRXWTFORVHCN5TQNRGMHOPEGWWSNCVOX2LQEE3L",
+    "collateralToken": "CAF7M3QUD53UAQWB365QHHTV2Y4O77HLYMAMXQWLJSMONMJM4MLF4YVH",
+    "mockLending": "CBLCB4TDQ7T7PTBL56KSFZZKPSVQLGMYNLAQHYDWK3APIPT7ID2O7YYV",
+    "quoteEscrow": "CCDFR7KNBFMKAESXNEZU3SSCMPUXEPXADPW2TAF5UBNZGX6VBDA6VPRF",
+    "nectarExecutor": "CDUE2R3BDAPGKTMPN6BDWYOGG22KNQWZWLUS4V4T2F2ZDJQIOH3VBBGB"
+  },
+  "decimals": 7,
+  "fixture": {
+    "debtRepay": "100000000000",
+    "cashOut": "101400000000",
+    "keeperCompensation": "500000000",
+    "protocolFee": "200000000",
+    "minNetSurplus": "700000000",
+    "collateralAmount": "500000000"
+  }
+}

@@ -1,0 +1,12 @@
+.secrets/
+.env
+.env.*
+!.env.example
+node_modules/
+target/
+.next/
+dist/
+*.wasm
+!deployments/**/*.wasm
+.vercel/
+__pycache__/
