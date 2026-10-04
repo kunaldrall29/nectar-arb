@@ -1,0 +1,21 @@
+{
+  "name": "nectar",
+  "private": true,
+  "scripts": {
+    "contracts:test": "cd contracts && forge test",
+    "export:abi": "node scripts/export-abi.mjs",
+    "anvil:arb": "anvil --chain-id 421614 --port 8545 --block-time 1",
+    "anvil:rh": "anvil --chain-id 46630 --port 8546 --block-time 1",
+    "deploy:local-arb": "node scripts/deploy.mjs local-arb",
+    "deploy:local-rh": "node scripts/deploy.mjs local-rh",
+    "deploy:arb-sepolia": "node scripts/deploy.mjs arb-sepolia",
+    "deploy:robinhood-testnet": "node scripts/deploy.mjs robinhood-testnet",
+    "backend:dev": "cd backend && npm run dev",
+    "backend:seed": "cd backend && npm run seed",
+    "backend:start": "cd backend && npm run start",
+    "web:dev": "cd web && npm run dev",
+    "web:build": "cd web && npm run build",
+    "demo:local": "node scripts/demo-local.mjs",
+    "snapshot": "node scripts/export-snapshot.mjs"
+  }
+}
