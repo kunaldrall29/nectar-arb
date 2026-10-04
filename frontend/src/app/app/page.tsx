@@ -12,7 +12,7 @@ function shortAddr(v: string) {
 
 function formatRaw(raw: string, decimals = 7) {
   const n = BigInt(raw || "0");
-  const base = 10n ** BigInt(decimals);
+  const base = BigInt(10) ** BigInt(decimals);
   const whole = n / base;
   const frac = (n % base).toString().padStart(decimals, "0").replace(/0+$/, "");
   return frac ? `${whole}.${frac}` : whole.toString();

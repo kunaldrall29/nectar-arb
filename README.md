@@ -100,3 +100,21 @@ https://stellar.expert/explorer/testnet/tx/68bc043b07b5d09250ed63da11b5711cece8b
 **Working on testnet:** token mint, deposit/withdraw accounting, quote reserve/consume, liquidation settlement, API + UI against live contracts.
 
 **Stubbed / deferred vs full PRD:** EIP-712 / EVM adapters, Arbitrum & Robinhood deployments, AMM routing, reorg indexer, org auth, production guardian multisig, Morpho Blue production adapters.
+
+
+## Frontend deploy (Vercel)
+
+Anonymous temporary deployment (claim to keep):
+
+- Live URL: https://temporary-instant-drizzle-ybdvca7.vercel.app
+- Claim: https://vercel.com/claim-deployment?code=bf24795a-41be-4536-a34a-bc5f84895844
+
+For a durable deploy:
+
+```bash
+cd frontend
+npx vercel login
+NEXT_PUBLIC_API_URL=https://<your-backend-host> npx vercel --prod
+```
+
+Backend write ops require `NECTAR_SECRET_KEY` on the API host.
