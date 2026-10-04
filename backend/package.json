@@ -1,0 +1,26 @@
+{
+  "name": "@nectar/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "indexer": "tsx src/indexer.ts",
+    "api": "tsx src/api.ts",
+    "agent": "tsx src/agent.ts",
+    "start": "tsx src/start.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nectar/core": "workspace:*",
+    "cors": "2.8.5",
+    "express": "4.21.2",
+    "viem": "2.21.54"
+  },
+  "devDependencies": {
+    "@types/cors": "2.8.17",
+    "@types/express": "5.0.0",
+    "@types/node": "22.10.2",
+    "tsx": "4.19.2",
+    "typescript": "5.6.3"
+  }
+}

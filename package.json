@@ -1,0 +1,21 @@
+{
+  "name": "nectar",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "gen:abis": "node scripts/gen-abis.mjs",
+    "contracts:build": "cd contracts && forge build",
+    "contracts:test": "cd contracts && forge test",
+    "deploy:local": "bash scripts/deploy.sh local",
+    "deploy:arbitrum-sepolia": "bash scripts/deploy.sh arbitrum-sepolia",
+    "deploy:robinhood-testnet": "bash scripts/deploy.sh robinhood-testnet",
+    "indexer": "pnpm --filter @nectar/backend indexer",
+    "api": "pnpm --filter @nectar/backend api",
+    "agent": "pnpm --filter @nectar/backend agent",
+    "backend": "pnpm --filter @nectar/backend start",
+    "web": "pnpm --filter @nectar/web dev",
+    "build": "pnpm --filter @nectar/web build",
+    "typecheck": "pnpm -r typecheck"
+  }
+}
