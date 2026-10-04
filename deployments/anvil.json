@@ -1,0 +1,44 @@
+{
+  "network": "anvil",
+  "chainId": 31337,
+  "status": "local",
+  "rpc": "http://127.0.0.1:8545",
+  "compiler": {
+    "solc": "0.8.24",
+    "optimizer": true,
+    "runs": 200,
+    "viaIR": true
+  },
+  "commit": "ref: refs/heads/cursor/nectar-e2e-prototype-6192",
+  "deploymentBlock": 16,
+  "keeperAllowlist": true,
+  "mockLabeled": true,
+  "marketKey": "0xa788f4e53200dd5563267e84157287daa49b109918ac5070b4327a7e38ef2333",
+  "morphoMarketId": "0x6d31c3cc9eb9eab74d2b366b21a71d6ee7cff3b0c90d8338a5fa305fa80bbaaf",
+  "policyHash": "0x9e5fafbbabad8dec33b1c4e8d19a895f3a4e7bce5253b662acd231e8271fec46",
+  "borrower": "0x628298b2fb130fa9F4D714177858D9a0505c4E9d",
+  "addresses": {
+    "debtToken": "0x55db4ccf7f3408c4a73dee7123995982a6a02ba9",
+    "collateralToken": "0xf9e69491daaddeeef02b17e979debda83f5e381f",
+    "oracle": "0x88ee8f4a8cd5b0427445c4dce4f68f8edab1f7a8",
+    "sequencer": "0x6b8dec27811f2bd4f17123840af986779a97e2a7",
+    "morpho": "0x435e31ec47563fbf2c4e829aff49820f04ac202e",
+    "amm": "0xe09874b13a59ae772ea6a1895e8408ade20ca85f",
+    "registry": "0x140583c7ffdb4f3349414a74a1ca3ca6d1eea0a2",
+    "escrow": "0xc4f502b7534fa9918bb84fec4890e68a85f712f6",
+    "riskGuard": "0x9f3749a9b387df7a1f5b8d43f4d27a6f6de59e93",
+    "executor": "0x6bdfc44fd27e2d66d994bb4f92c3a0616f4abcb2",
+    "adapter": "0x71681539218812997d8e523fa41d79ec043bb39a"
+  },
+  "roles": {
+    "deployer": "0xB1A974969D7e81E71573cBdB3f6d318601d64014",
+    "keeper": "0x123a06CBd1125973b5E0Cecaf0D9B1EF574835D0",
+    "maker": "0x628298b2fb130fa9F4D714177858D9a0505c4E9d"
+  },
+  "bytecodeHashes": {
+    "escrow": "0x1f40f2e2b5dd4a794ac4ca7c802c74d550a8c424fb377062492c564f02ebb628",
+    "executor": "0x85c86bb80cd3d4d39c11ec4a4ca0faa1d477ab1217f1499a962c22b254526a3e",
+    "registry": "0x286f13fb437c61b2ee23a987ff50d9c6d63faff644771ae985d79264e1cc0fba",
+    "adapter": "0xab85a22285687898906ff3b69beec35511bc10eeea20b240d0d269a004314e35"
+  }
+}

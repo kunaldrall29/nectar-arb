@@ -1,0 +1,16 @@
+{
+  "network": "arbitrum-sepolia",
+  "chainId": 421614,
+  "status": "awaiting_gas",
+  "rpc": "https://sepolia-rollup.arbitrum.io/rpc",
+  "explorer": "https://sepolia.arbiscan.io",
+  "compiler": { "solc": "0.8.24", "optimizer": true, "runs": 200, "viaIR": true },
+  "keeperAllowlist": true,
+  "mockLabeled": true,
+  "roles": {
+    "deployer": "0xB1A974969D7e81E71573cBdB3f6d318601d64014",
+    "keeper": "0x123a06CBd1125973b5E0Cecaf0D9B1EF574835D0",
+    "maker": "0x628298b2fb130fa9F4D714177858D9a0505c4E9d"
+  },
+  "note": "Contracts are implemented and rehearsed on Anvil. Deployer has 0 Sepolia ETH. After funding, run ./scripts/deploy-sepolia.sh. Do not treat this file as a live production deployment."
+}

@@ -1,0 +1,10 @@
+{
+  "network": "robinhood-testnet",
+  "chainId": 46630,
+  "status": "monitored",
+  "rpc": "https://46630.rpc.thirdweb.com",
+  "explorer": null,
+  "mockLabeled": true,
+  "keeperAllowlist": false,
+  "note": "RPC is reachable (eth_chainId 0xb626). No Nectar contracts deployed — deployer has 0 native balance. Funds never cross from Arbitrum. The UI lists this environment without fabricating balances."
+}

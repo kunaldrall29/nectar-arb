@@ -1,0 +1,15 @@
+{
+  "name": "@nectar/keeper",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "once": "tsx src/index.ts --once"
+  },
+  "dependencies": {
+    "@nectar/sdk": "*",
+    "tsx": "4.19.3",
+    "viem": "2.23.2"
+  }
+}

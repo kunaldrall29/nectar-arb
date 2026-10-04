@@ -1,0 +1,47 @@
+# Secrets — never commit keys or funded wallets
+.secrets/
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Dependencies and build
+node_modules/
+.pnpm-store/
+dist/
+.next/
+out/
+cache/
+broadcast/
+coverage/
+lcov.info
+typechain-types/
+
+# Data
+data/
+*.db
+*.sqlite
+apps/web/.next/
+apps/web/.vercel/
+apps/keeper/data/
+
+# OS / IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Foundry
+contracts/cache/
+contracts/out/
+contracts/broadcast/
+
+# Vercel
+.vercel
+
+# TTS / local recordings
+/tmp/
+*.wav
+*.mp3
+narration/
