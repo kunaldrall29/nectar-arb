@@ -32,6 +32,13 @@ Create an unhealthy position + funded quote first:
 ./scripts/deploy-sepolia.sh
 ```
 
-The seed script can fill immediately. To let the keeper fill instead, write `data/active-quote.json` without calling `executeJob` (omit the last step in `scripts/seed-and-fill.mjs` or set `SEED_SKIP_EXECUTE=1` in a later revision) and start the keeper while the quote is still inside its 30–120s window.
+The seed script can fill immediately. To let the keeper fill instead:
+
+```bash
+SEED_SKIP_EXECUTE=1 node scripts/seed-and-fill.mjs
+npm run keeper
+```
+
+Start the keeper while the quote is still inside its 30–120s window.
 
 Default quote lifetime for the rehearsal is ~110 seconds so a human can watch the UI.
