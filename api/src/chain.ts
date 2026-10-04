@@ -16,7 +16,7 @@ import {
 } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { EIP712_NAME, EIP712_VERSION, KEEPER_FEE, MIN_SURPLUS, PROTOCOL_FEE, quoteTypes } from "../../shared/quote.ts";
-import { parseUnits } from "../../shared/units.ts";
+import { formatUnits, parseUnits } from "../../shared/units.ts";
 import {
   clearJobs,
   clearLogs,
@@ -561,6 +561,50 @@ export function createRuntime(db: DB) {
     };
   }
 
+  async function outlookForNewQuote(message: QuoteMessage) {
+    const [paused, priceStatus, liquidatable, debt, seize, collateral, account] = (await readMany([
+      { address: manifest.pauseGuardian, abi: abis.pause, functionName: "paused" },
+      { address: manifest.rehearsalMarket, abi: abis.market, functionName: "priceStatus" },
+      { address: manifest.rehearsalMarket, abi: abis.market, functionName: "isLiquidatable", args: [message.borrower] },
+      { address: manifest.rehearsalMarket, abi: abis.market, functionName: "debtOf", args: [message.borrower] },
+      { address: manifest.rehearsalMarket, abi: abis.market, functionName: "seizureFor", args: [message.maxDebtRepay] },
+      { address: manifest.rehearsalMarket, abi: abis.market, functionName: "collateralOf", args: [message.borrower] },
+      { address: manifest.escrow, abi: abis.escrow, functionName: "accountOf", args: [message.maker, message.debtToken] },
+    ])) as [boolean, number, boolean, bigint, bigint, bigint, readonly [bigint, bigint]];
+    const fail = (reason: string) => ({
+      ok: false,
+      code: -1,
+      reason,
+      repay: "0",
+      seize: "0",
+      surplus: "0",
+    });
+    if (paused) return fail("SCOPE_PAUSED");
+    if (Number(priceStatus) === 1) return fail("PRICE_UNAVAILABLE");
+    if (Number(priceStatus) === 2) return fail("PRICE_STALE");
+    if (!liquidatable) return fail("INELIGIBLE");
+    const repay = debt;
+    if (repay === 0n || repay > message.maxDebtRepay) return fail("MAX_DEBT");
+    if (seize === 0n || seize !== message.collateralAmount || collateral < seize) return fail("COLLATERAL_MISMATCH");
+    const fees = message.keeperCompensation + message.protocolFee;
+    if (fees > message.cashOut) return fail("INSUFFICIENT_PROCEEDS");
+    const afterFees = message.cashOut - fees;
+    if (afterFees < repay) return fail("INSUFFICIENT_PROCEEDS");
+    const surplus = afterFees - repay;
+    if (surplus < message.minNetSurplus) return fail("INSUFFICIENT_PROCEEDS");
+    const cash = account[0];
+    const reserved = account[1];
+    if (cash - reserved < message.cashOut) return fail("INSUFFICIENT_CASH");
+    return {
+      ok: true,
+      code: 0,
+      reason: "OK",
+      repay: repay.toString(),
+      seize: seize.toString(),
+      surplus: surplus.toString(),
+    };
+  }
+
   async function preview(message: QuoteMessage) {
     const result = (await publicClient.readContract({
       address: manifest.executor,
@@ -695,7 +739,7 @@ export function createRuntime(db: DB) {
       const accounts = requireDemo();
       const target = borrower ? getAddress(borrower) : manifest.openBorrower;
       const message = await buildQuote(accounts.maker.address, accounts.keeper.address, target);
-      const view = await preview(message).catch((error) => ({
+      const raw = await preview(message).catch((error) => ({
         ok: false,
         code: -1,
         reason: explainError(error),
@@ -703,6 +747,11 @@ export function createRuntime(db: DB) {
         seize: message.collateralAmount.toString(),
         surplus: "0",
       }));
+      // Executor preview refuses every unregistered quote with QUOTE_NOT_ACTIVE before it
+      // looks at the position. Registration review should show the market checks instead.
+      const view = raw.reason === "QUOTE_NOT_ACTIVE" ? await outlookForNewQuote(message) : raw;
+      const sym = manifest.debtSymbol;
+      const dec = manifest.debtDecimals;
       return {
         network: chainLabel(),
         asset: manifest.debtSymbol,
@@ -711,7 +760,7 @@ export function createRuntime(db: DB) {
         destination: manifest.quotes,
         destinationLabel: "Nectar quote registry",
         expiry: message.validUntil.toString(),
-        fee: `Keeper ${KEEPER_FEE.toString()} + protocol ${PROTOCOL_FEE.toString()} base units. Minimum surplus ${MIN_SURPLUS.toString()}.`,
+        fee: `Keeper ${formatUnits(KEEPER_FEE, dec)} ${sym}, protocol ${formatUnits(PROTOCOL_FEE, dec)} ${sym}, minimum surplus ${formatUnits(MIN_SURPLUS, dec)} ${sym}.`,
         collateralAmount: message.collateralAmount.toString(),
         borrower: target,
         preview: view,
@@ -719,6 +768,7 @@ export function createRuntime(db: DB) {
         notes: [
           "Registration reserves the full cashOut. This prototype cannot cancel the quote before expiry.",
           "Maximum lifetime is 120 seconds.",
+          "The quote is not onchain until you submit. The executor cannot see it yet.",
         ],
       };
     },
@@ -759,7 +809,7 @@ export function createRuntime(db: DB) {
         destination: manifest.executor,
         destinationLabel: "Nectar executor",
         expiry: json.validUntil,
-        fee: `Keeper ${json.keeperCompensation} and protocol ${json.protocolFee} base units, paid from reserved cash on success.`,
+        fee: `Keeper ${formatUnits(BigInt(json.keeperCompensation), manifest.debtDecimals)} ${manifest.debtSymbol} and protocol ${formatUnits(BigInt(json.protocolFee), manifest.debtDecimals)} ${manifest.debtSymbol}, paid from reserved cash on success.`,
         preview: view,
         quote: json,
         notes: ["The keeper submits one transaction. If any check fails, the whole settlement reverts."],
