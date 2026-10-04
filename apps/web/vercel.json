@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd ../.. && npm install && npm run build -w @nectar/shared && npm run build -w @nectar/web",
+  "buildCommand": "cd ../.. && npm run build -w @nectar/shared && npm run build -w @nectar/web",
   "outputDirectory": ".next",
   "framework": "nextjs",
   "installCommand": "cd ../.. && npm install"
