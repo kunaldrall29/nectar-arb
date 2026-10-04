@@ -60,6 +60,7 @@ contract MiniMorpho {
     error HealthyPosition();
     error ZeroAssets();
     error TooMuchSeized();
+    error RepayExceedsDebt();
 
     function idOf(MarketParams memory params) public pure returns (bytes32) {
         return keccak256(abi.encode(params));
@@ -156,7 +157,7 @@ contract MiniMorpho {
         uint256 repaidAssets = seizedAssets.mulDiv(collateralPrice, ORACLE_PRICE_SCALE, Math.Rounding.Ceil).mulDiv(
             WAD, lif, Math.Rounding.Ceil
         );
-        if (repaidAssets > p.borrowAssets) repaidAssets = p.borrowAssets;
+        if (repaidAssets > p.borrowAssets) revert RepayExceedsDebt();
 
         p.borrowAssets -= repaidAssets;
         market[id].totalBorrowAssets -= uint128(repaidAssets);

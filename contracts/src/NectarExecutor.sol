@@ -273,7 +273,7 @@ contract NectarExecutor is IMorphoLiquidateCallback {
         uint256 repay = q.collateralAmount.mulDiv(px, 1e36, Math.Rounding.Ceil).mulDiv(
             1e18, lending.liquidationIncentiveFactor(m.params.lltv), Math.Rounding.Ceil
         );
-        if (repay > borrowAssets) repay = borrowAssets;
+        if (repay > borrowAssets) return (Refusal.POSITION_CHANGED, repay, 0);
         if (repay > q.maxDebtRepay) return (Refusal.DEBT_EXCEEDS_BOUND, repay, 0);
         uint256 required = q.keeperFee + q.protocolFee + q.minNetSurplus;
         if (q.cashOut - repay < required) return (Refusal.INSUFFICIENT_PROCEEDS, repay, 0);
