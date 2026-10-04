@@ -50,3 +50,14 @@ Claim: https://vercel.com/claim-deployment?code=00a829ae-01f7-4eb5-88ce-bf18c0db
 
 ## Tests
 `cd contracts && forge test --via-ir` → 5/5 including Section 9 numerical fixture.
+
+## Artifacts (Cloud Agent)
+- `nectar_founder_demo.mp4` — full founder narrative (~96s) with female TTS over product screens
+- `nectar_live_ui_walkthrough.mp4` — live headed-browser UI capture
+- `nectar_live_ui_with_founder_audio.mp4` — live UI + founder voice (first ~32s)
+- Screenshots: `screenshot_hero.png`, `screenshot_demo_settled.png`, `screenshot_analytics_traction.png`, `screenshot_executions.png`
+
+## PR
+Branch pushed: `cursor/nectar-testnet-prototype-975f`  
+Open PR: https://github.com/kunaldrall29/nectar-arb/pull/new/cursor/nectar-testnet-prototype-975f  
+(`gh pr create` returned 403 for this integration token; ManagePullRequest tool unavailable in session.)
