@@ -1,0 +1,26 @@
+# secrets
+.env
+.env.*
+!.env.example
+*.key
+deployer.env
+
+# foundry
+contracts/out/
+contracts/cache/
+contracts/broadcast/*/31337/
+contracts/broadcast/**/dry-run/
+
+# node
+node_modules/
+.next/
+dist/
+*.tsbuildinfo
+.vercel
+
+# local runtime data
+backend/data/
+deployments/31337.json
+*.log
+/artifacts/
+*.mp4
