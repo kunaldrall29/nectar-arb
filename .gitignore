@@ -19,3 +19,4 @@ deployments/anvil.log
 deployments/anvil.pid
 deployments/deploy-*.log
 backend/data/
+deployments/anvil.pid
