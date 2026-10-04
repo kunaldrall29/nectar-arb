@@ -7,6 +7,7 @@ import { shortAddr } from "@/lib/format";
 export function WalletButton() {
   const [addr, setAddr] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
     setAddr(loadWallet()?.publicKey || null);
@@ -14,6 +15,7 @@ export function WalletButton() {
 
   async function connect() {
     setBusy(true);
+    setErr(null);
     try {
       const existing = loadWallet() || (await createWallet());
       await api("/wallet/fund", {
@@ -22,7 +24,7 @@ export function WalletButton() {
       });
       setAddr(existing.publicKey);
     } catch (error) {
-      alert(error instanceof Error ? error.message : "Connect failed");
+      setErr(error instanceof Error ? error.message : "Connect failed");
     } finally {
       setBusy(false);
     }
@@ -30,7 +32,7 @@ export function WalletButton() {
 
   if (addr) {
     return (
-      <div className="rounded-full border border-nectar-line bg-nectar-panel px-3 py-1.5 text-xs text-nectar-honey">
+      <div className="rounded-full border border-nectar-line bg-nectar-panel px-3 py-1.5 text-xs text-nectar-honey" title={addr}>
         {shortAddr(addr, 4)}
       </div>
     );

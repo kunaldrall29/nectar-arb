@@ -88,9 +88,12 @@ export async function invoke(opts: {
   if (rpc.Api.isSimulationError(sim)) {
     throw new Error(sim.error);
   }
-  const retval = sim.result?.retval
-    ? scValToNative(sim.result.retval)
-    : null;
+  let retval: unknown = null;
+  try {
+    retval = sim.result?.retval ? scValToNative(sim.result.retval) : null;
+  } catch {
+    retval = null;
+  }
   if (opts.simulateOnly) {
     return { result: retval };
   }
@@ -110,12 +113,11 @@ export async function invoke(opts: {
     const got = await server.getTransaction(hash);
     if (got.status === "SUCCESS") {
       let parsed: unknown = retval;
-      if (got.returnValue) {
-        try {
-          parsed = scValToNative(got.returnValue);
-        } catch {
-          parsed = retval;
-        }
+      try {
+        const rv = (got as { returnValue?: unknown }).returnValue;
+        if (rv) parsed = scValToNative(rv as Parameters<typeof scValToNative>[0]);
+      } catch {
+        parsed = retval;
       }
       return {
         result: parsed,
@@ -153,7 +155,9 @@ export async function read(contract: string, method: string, args: xdr.ScVal[] =
 }
 
 export async function friendbot(address: string) {
-  const official = await fetch(`https://friendbot.stellar.org/?addr=${address}`);
+  const official = await fetch(`https://friendbot.stellar.org/?addr=${address}`, {
+    signal: AbortSignal.timeout(20000),
+  });
   if (!official.ok) {
     const text = await official.text();
     if (!text.includes("op_already_exists") && !text.includes("create_account")) {
