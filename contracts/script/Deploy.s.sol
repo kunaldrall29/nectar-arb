@@ -20,7 +20,7 @@ contract Deploy is Script {
         uint256 pk = vm.envUint("PRIVATE_KEY");
         address deployer = vm.addr(pk);
         uint256 chainId = block.chainid;
-        require(chainId == 421614 || chainId == 31337, "refusing chain");
+        require(chainId == 421614 || chainId == 31337 || chainId == 46630, "refusing chain");
 
         address borrowerA = makeAddr("nectar.borrower.A");
         address borrowerB = makeAddr("nectar.borrower.B");

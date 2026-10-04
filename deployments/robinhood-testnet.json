@@ -1,0 +1,228 @@
+{
+  "scope": "hackathon-r1-single-deployment",
+  "audited": false,
+  "label": "Nectar testnet prototype. Rehearsal market is not Morpho. EVM contracts are a new implementation and are not audited.",
+  "environment": "testnet",
+  "networkName": "Robinhood Chain testnet",
+  "chainId": 46630,
+  "deployer": "0x031e038aeba717714dacC95F16d03234d722bCBb",
+  "guardian": "0x031e038aeba717714dacC95F16d03234d722bCBb",
+  "oracle": "0x031e038aeba717714dacC95F16d03234d722bCBb",
+  "protocolFeeRecipient": "0x031e038aeba717714dacC95F16d03234d722bCBb",
+  "demoMaker": "0x031e038aeba717714dacC95F16d03234d722bCBb",
+  "openBorrower": "0xC2a5104CE68c4c3Da1CFB6Fe8eBE16f03A488EAe",
+  "seededBorrower": "0xeb1E68fde8e86F5e88df07E2F62686644fDb02Ef",
+  "debtToken": "0xc436488f247f89d56d971ba60284a0929B177aA5",
+  "debtSymbol": "nUSD",
+  "debtName": "Nectar Rehearsal USD",
+  "debtDecimals": 6,
+  "collateralToken": "0x2F4C92450a1A7B6485F2e144cc0A82A413E601A1",
+  "collateralSymbol": "nSTK",
+  "collateralName": "Nectar Rehearsal Collateral",
+  "collateralDecimals": 18,
+  "pauseGuardian": "0xd72E7bDf4603FB5Cd0355fB541A5c239ba11FEaD",
+  "rehearsalMarket": "0xC1B0798cA4de3192b9db36cAbee8C891336D6b48",
+  "escrow": "0xa91112a940eaC477e114c6Ed90d35F108693999a",
+  "quotes": "0xB5B19c8C80F11d5912d0ff16C5eE673bd0DFA332",
+  "executor": "0x6F05CaD318337AFB72A94092Cd88f8485a48D6EC",
+  "officialDebtAsset": {
+    "address": "0x7E955252E15c84f5768B83c41a71F9eba181802F",
+    "name": "Global Dollar",
+    "symbol": "USDG",
+    "decimals": 6,
+    "role": "official debt asset for reads"
+  },
+  "startBlock": 128748978,
+  "endBlock": 128749285,
+  "commit": "bf5cd9a",
+  "transactions": [
+    {
+      "hash": "0x847314aecd3c4f2f9d82cfa44e8269f42917c5540b43b832ce872e199d07c419",
+      "blockNumber": 128748978,
+      "status": 1,
+      "contractName": "MockERC20",
+      "contractAddress": "0xc436488f247f89d56d971ba60284a0929b177aa5"
+    },
+    {
+      "hash": "0x9ec4b6e0d664ec65c633956fdb9a0eed5262f2c167269f826a067106c4e88638",
+      "blockNumber": 128748993,
+      "status": 1,
+      "contractName": "MockERC20",
+      "contractAddress": "0x2f4c92450a1a7b6485f2e144cc0a82a413e601a1"
+    },
+    {
+      "hash": "0x4d8940e08314a94cef33100356c7b7b379beec73357482d4479a2e9210e0027e",
+      "blockNumber": 128749009,
+      "status": 1,
+      "contractName": "PauseGuardian",
+      "contractAddress": "0xd72e7bdf4603fb5cd0355fb541a5c239ba11fead"
+    },
+    {
+      "hash": "0x821597eb357f1a51e5455b540ac74045e2fde7a8c5df749ef4707bbdb58a6372",
+      "blockNumber": 128749023,
+      "status": 1,
+      "contractName": "RehearsalMarket",
+      "contractAddress": "0xc1b0798ca4de3192b9db36cabee8c891336d6b48"
+    },
+    {
+      "hash": "0x8c90ea7825b2d7eca8a404c447907a914a1ae286b006316979e28ad4859ec0e9",
+      "blockNumber": 128749039,
+      "status": 1,
+      "contractName": "NectarEscrow",
+      "contractAddress": "0xa91112a940eac477e114c6ed90d35f108693999a"
+    },
+    {
+      "hash": "0xd346a94319e4169efa7af283404fc04964d295b29cd94233dfe0f002f8d15cb8",
+      "blockNumber": 128749051,
+      "status": 1,
+      "contractName": "NectarQuotes",
+      "contractAddress": "0xb5b19c8c80f11d5912d0ff16c5ee673bd0dfa332"
+    },
+    {
+      "hash": "0x56a113f016fdebff42a157f0230f650bdc6f26590a745ee88b5f1444cbfb0e8d",
+      "blockNumber": 128749066,
+      "status": 1,
+      "contractName": "NectarExecutor",
+      "contractAddress": "0x6f05cad318337afb72a94092cd88f8485a48d6ec"
+    },
+    {
+      "hash": "0x795bc0f3534bc6bf81633da01c0ea320983a3af7a02062afe82655eb6b99ef14",
+      "blockNumber": 128749078,
+      "status": 1,
+      "contractName": "NectarEscrow",
+      "contractAddress": "0xa91112a940eac477e114c6ed90d35f108693999a",
+      "function": "wire(address,address)"
+    },
+    {
+      "hash": "0x52652457b1223970f4dd68aaa63f73fcc19287391a9097f392212d0a32c59699",
+      "blockNumber": 128749094,
+      "status": 1,
+      "contractName": "NectarQuotes",
+      "contractAddress": "0xb5b19c8c80f11d5912d0ff16c5ee673bd0dfa332",
+      "function": "setExecutor(address)"
+    },
+    {
+      "hash": "0x1397e53dd22bb2cf72b6358da489953da29470452f807fb0c990e29c10f76eb5",
+      "blockNumber": 128749111,
+      "status": 1,
+      "contractName": "MockERC20",
+      "contractAddress": "0xc436488f247f89d56d971ba60284a0929b177aa5",
+      "function": "mint(address,uint256)"
+    },
+    {
+      "hash": "0x5da388c937531c5644c36fbf2ace91ee40fd4c252e5c9f0777822dab67f59194",
+      "blockNumber": 128749121,
+      "status": 1,
+      "contractName": "MockERC20",
+      "contractAddress": "0x2f4c92450a1a7b6485f2e144cc0a82a413e601a1",
+      "function": "mint(address,uint256)"
+    },
+    {
+      "hash": "0xb0cf224c8060db02585676e097fab20a1a35a8eb338c3f78384f7980a871e957",
+      "blockNumber": 128749130,
+      "status": 1,
+      "contractName": "MockERC20",
+      "contractAddress": "0xc436488f247f89d56d971ba60284a0929b177aa5",
+      "function": "mint(address,uint256)"
+    },
+    {
+      "hash": "0xc2da64fa9a6b5864ad4193941716c17b2737b7fc6a498d20215b25f743bf04ca",
+      "blockNumber": 128749143,
+      "status": 1,
+      "contractName": "MockERC20",
+      "contractAddress": "0x2f4c92450a1a7b6485f2e144cc0a82a413e601a1",
+      "function": "mint(address,uint256)"
+    },
+    {
+      "hash": "0x75253da02ffc89e05db0bd9532e807323c098d20b62ffec6bf8e8cfa8f9a18aa",
+      "blockNumber": 128749157,
+      "status": 1,
+      "contractName": "MockERC20",
+      "contractAddress": "0xc436488f247f89d56d971ba60284a0929b177aa5",
+      "function": "approve(address,uint256)"
+    },
+    {
+      "hash": "0x1f3cb62ae44491e811e3121ee67f1b9984cc953d25cf5e6da8e86e31f64de1f0",
+      "blockNumber": 128749168,
+      "status": 1,
+      "contractName": "MockERC20",
+      "contractAddress": "0x2f4c92450a1a7b6485f2e144cc0a82a413e601a1",
+      "function": "approve(address,uint256)"
+    },
+    {
+      "hash": "0xac339790a8d172c7cffa366c53a7ed65c55d67713d09648e2631031b4d786e64",
+      "blockNumber": 128749182,
+      "status": 1,
+      "contractName": "RehearsalMarket",
+      "contractAddress": "0xc1b0798ca4de3192b9db36cabee8c891336d6b48",
+      "function": "supply(uint256)"
+    },
+    {
+      "hash": "0xef372efd0d10db11e104fe4e5e0db2fc7b4d49163bbefde754c6b25d21376cc1",
+      "blockNumber": 128749196,
+      "status": 1,
+      "contractName": "RehearsalMarket",
+      "contractAddress": "0xc1b0798ca4de3192b9db36cabee8c891336d6b48",
+      "function": "openRehearsalPosition(address,uint256,uint256)"
+    },
+    {
+      "hash": "0x7569129e4d86eadc03e0230adff1a7a9114b2528a71fcd174ad76af6590ae81f",
+      "blockNumber": 128749208,
+      "status": 1,
+      "contractName": "RehearsalMarket",
+      "contractAddress": "0xc1b0798ca4de3192b9db36cabee8c891336d6b48",
+      "function": "openRehearsalPosition(address,uint256,uint256)"
+    },
+    {
+      "hash": "0x82d22492a65dc451357b4c008e136bf48ee02a7459a033352a3b0dd6719a16c1",
+      "blockNumber": 128749227,
+      "status": 1,
+      "contractName": "RehearsalMarket",
+      "contractAddress": "0xc1b0798ca4de3192b9db36cabee8c891336d6b48",
+      "function": "setPrice(uint256)"
+    },
+    {
+      "hash": "0xbb57eb2844ba6ab27361c692d83342abf55e3ad9f53718a8d15e079cd4f8a28e",
+      "blockNumber": 128749243,
+      "status": 1,
+      "contractName": "MockERC20",
+      "contractAddress": "0xc436488f247f89d56d971ba60284a0929b177aa5",
+      "function": "approve(address,uint256)"
+    },
+    {
+      "hash": "0xe967eaa01a38c5833d8349a88cb92b474b96b5d7aae2512bedc5c40ee2e6d9eb",
+      "blockNumber": 128749261,
+      "status": 1,
+      "contractName": "NectarEscrow",
+      "contractAddress": "0xa91112a940eac477e114c6ed90d35f108693999a",
+      "function": "deposit(address,uint256,address)"
+    },
+    {
+      "hash": "0xfa3caa9cea9262031f58b0566b08a10add12b52747c1b52b95ccce35299362a8",
+      "blockNumber": 128749275,
+      "status": 1,
+      "contractName": "NectarQuotes",
+      "contractAddress": "0xb5b19c8c80f11d5912d0ff16c5ee673bd0dfa332",
+      "function": "registerQuote((uint8,address,uint256,bytes32,uint16,address,address,uint256,address,uint256,uint256,address,uint256,uint256,uint256,address,address,uint64,uint256,bytes32,uint256),bytes)"
+    },
+    {
+      "hash": "0x6d69978efa2ffffee2a4e442000ea6a85e1456e1eb9c2d54b452f8ad305333f1",
+      "blockNumber": 128749285,
+      "status": 1,
+      "contractName": "NectarExecutor",
+      "contractAddress": "0x6f05cad318337afb72a94092cd88f8485a48d6ec",
+      "function": "execute((uint8,address,uint256,bytes32,uint16,address,address,uint256,address,uint256,uint256,address,uint256,uint256,uint256,address,address,uint64,uint256,bytes32,uint256))"
+    }
+  ],
+  "explorers": {
+    "addressBase": "https://explorer.testnet.chain.robinhood.com/address/",
+    "txBase": "https://explorer.testnet.chain.robinhood.com/tx/"
+  },
+  "notes": [
+    "Hackathon prototype, R1 single-deployment slice on Robinhood Chain testnet.",
+    "Rehearsal market is not Morpho Blue.",
+    "EVM contracts are a new implementation and are not audited.",
+    "The rehearsal debt token is nUSD (Nectar Rehearsal USD), a mintable test token. It is not USDG.",
+    "Official Paxos USDG at officialDebtAsset is recorded for reads and is not the market debt token."
+  ]
+}
