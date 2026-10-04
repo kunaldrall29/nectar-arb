@@ -22,9 +22,9 @@ deploy() {
     --alias "$alias" | tail -1
 }
 
-USDC_WASM=target/wasm32-unknown-unknown/release/mock_token.wasm
-LAB_WASM=target/wasm32-unknown-unknown/release/mock_lending.wasm
-CORE_WASM=target/wasm32-unknown-unknown/release/nectar_core.wasm
+USDC_WASM=target/wasm32v1-none/release/mock_token.wasm
+LAB_WASM=target/wasm32v1-none/release/mock_lending.wasm
+CORE_WASM=target/wasm32v1-none/release/nectar_core.wasm
 
 USDC="$(deploy "$USDC_WASM" nectar-usdc)"
 echo "USDC=$USDC"
