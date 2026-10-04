@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.next/
+.env
+.env.local
+packages/contracts/out/
+packages/contracts/cache/
+packages/contracts/broadcast/
+apps/api/data/*.db
+*.log
+.vercel
+deployments/deployer.json

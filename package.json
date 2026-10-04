@@ -1,0 +1,20 @@
+{
+  "name": "nectar-arb",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "test:contracts": "cd packages/contracts && forge test --via-ir",
+    "dev:api": "npm run dev -w @nectar/api",
+    "dev:web": "npm run dev -w @nectar/web",
+    "build": "npm run build -w @nectar/api && npm run build -w @nectar/web",
+    "e2e:testnet": "tsx scripts/e2e-testnet.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "viem": "^2.21.54"
+  }
+}
