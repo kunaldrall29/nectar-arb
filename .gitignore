@@ -1,0 +1,13 @@
+.secrets/
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+out/
+contracts/out/
+contracts/cache/
+contracts/broadcast/*/31337/
+backend/data/
+*.log
+.vercel
