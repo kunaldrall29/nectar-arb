@@ -1,4 +1,7 @@
 node_modules/
+packages/contracts/out/
+packages/contracts/cache/
+packages/contracts/broadcast/
 .next/
 dist/
 out/
