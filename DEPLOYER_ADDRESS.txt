@@ -1,0 +1,16 @@
+0x031e038aeba717714dacC95F16d03234d722bCBb
+
+Fund this address with Arbitrum Sepolia ETH on chain id 421614.
+The private key is not in this file. It lives only in .secrets/deployer.key on the machine that created it.
+
+Suggested faucet (requires a browser and usually a mainnet balance or captcha):
+https://faucet.quicknode.com/arbitrum/sepolia
+
+Public RPC used by the deploy script:
+https://sepolia-rollup.arbitrum.io/rpc
+
+After the address has testnet ETH, deploy with:
+./scripts/deploy-sepolia.sh
+
+That script reads .secrets/deployer.key and writes deployments/arbitrum-sepolia.json.
+Do not commit the key file.
