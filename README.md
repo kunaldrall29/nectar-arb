@@ -2,7 +2,7 @@
 
 Hackathon slice of [Nectar](https://github.com/): funded, time-bounded liquidation bids that settle debt and collateral atomically.
 
-**Scope:** R1 single-deployment rehearsal. One lending market, which this repository deploys itself. It is a Nectar rehearsal fixture, not Morpho Blue. Arbitrum Sepolia (chain id 421614) is the intended public network. Robinhood Chain testnet (chain id 46630) is shown in the app as monitored-only because nothing is deployed there.
+**Scope:** R1 rehearsal. One lending market, which this repository deploys itself. It is a Nectar rehearsal fixture, not Morpho Blue. The live demo session is local Anvil standing in for Arbitrum Sepolia (chain id 421614), which is not funded yet. Robinhood Chain testnet (chain id 46630) has a separate rehearsal deployment recorded in `deployments/robinhood-testnet.json`. The app does not treat that cash as spendable on the connected chain. Arbitrum Sepolia itself is not deployed.
 
 **Not audited.** The EVM contracts are a new implementation. Earlier Stellar / Soroban liquidation work, including a Stellar grant, does not certify these contracts. Do not describe them as production-ready.
 
@@ -31,7 +31,7 @@ That starts Anvil (chain id 31337), deploys the rehearsal if the escrow has no c
 
 The web app's working signer is the **local rehearsal signer** (Foundry's public Anvil account 1). It is not a production key. The API refuses to use it unless the RPC chain id is 31337. Account 2 is the keeper. Both are unlocked development accounts.
 
-Open http://127.0.0.1:3000. The environment pill says testnet and local Anvil. Robinhood testnet stays unavailable under the network filter. Connect wallet uses an injected browser wallet when one exists. WalletConnect is not configured.
+Open http://127.0.0.1:3000. The environment pill says testnet and local Anvil. The Robinhood filter omits that chain's balances because this session is not connected to it. Connect wallet uses an injected browser wallet when one exists. WalletConnect is not configured.
 
 A fresh deploy seeds one completed settlement (self-operated, visible in Analytics) and leaves a second borrower liquidatable for the live quote.
 

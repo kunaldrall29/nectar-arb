@@ -59,7 +59,7 @@ export default function OverviewPage() {
               <h2>Other network</h2>
               <Unavailable
                 title="Robinhood Chain testnet"
-                body="Monitored only. No deployment, so no cash figure is shown. An outage or absence there does not lock this chain."
+                body="Deployed, not connected. No cash figure from chain 46630 is shown in this session. An outage there does not lock the connected chain."
               />
               <p className="secondary">
                 Rehearsal mark {liquidity ? formatUnits(liquidity.cash, decimals) : "—"} {symbol}, observed {meta.observedAt}. Not a market price and not spendable on another chain.

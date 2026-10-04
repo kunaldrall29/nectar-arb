@@ -30,8 +30,8 @@ export function ChainNotice() {
   if (hidden) {
     return (
       <Unavailable
-        title="Robinhood Chain testnet is not deployed"
-        body="This prototype has no escrow and no rehearsal market on chain 46630. Balances are omitted. That is not a zero balance, a loading error, or capacity of zero. Arbitrum cash cannot settle there."
+        title="Robinhood Chain testnet is not this session"
+        body="A rehearsal deployment exists on chain 46630. This workspace is not connected to it, so those balances are omitted. That is not a zero balance, a loading error, or capacity of zero. Cash on the connected chain cannot settle there. The market there is still the Nectar rehearsal fixture, not production stock collateral."
       />
     );
   }

@@ -90,9 +90,9 @@ app.get("/v1/networks", async (c) => {
         id: "robinhood-testnet",
         chainId: 46630,
         name: "Robinhood Chain testnet",
-        status: "monitored-only",
+        status: "deployed-unconnected",
         detail:
-          "No Nectar escrow, quote registry, or rehearsal market is deployed on Robinhood Chain testnet. Stock-collateral settlement is not live. Figures are omitted on purpose.",
+          "Rehearsal contracts are deployed on Robinhood Chain testnet. This API session does not read that RPC, so figures are omitted. Stock-collateral settlement is not live. The market is the Nectar rehearsal fixture, not Morpho.",
       },
     ],
     deployment: {
