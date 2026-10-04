@@ -163,6 +163,7 @@ contract NectarExecutor is IMorphoLiquidateCallback {
             return _refuse(p, Refusal.POSITION_CHANGED);
         }
         p.repaidAssets = lm.previewLiquidation(m.policy.params, q.collateralAmount);
+        if (p.repaidAssets > debt) return _refuse(p, Refusal.POSITION_CHANGED);
         if (p.repaidAssets > q.maxDebtRepay) return _refuse(p, Refusal.DEBT_ABOVE_BOUND);
         uint256 obligations = p.repaidAssets + q.keeperCompensation + q.protocolFee;
         if (obligations > q.cashOut || q.cashOut - obligations < q.minNetSurplus) {

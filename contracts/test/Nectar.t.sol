@@ -399,8 +399,10 @@ contract NectarTest is NectarBase {
     }
 
     function test_T14_debtAboveBoundReverts() public {
-        bytes32 id = _register(_fixtureQuote(maker));
-        oracle.setPrice(px(231));
+        Quote memory q = _fixtureQuote(maker);
+        q.maxDebtRepay = 9_999 * USD;
+        bytes32 id = _register(q);
+        _makeUnhealthy();
         _expectRefusal(id, NectarExecutor.Refusal.DEBT_ABOVE_BOUND);
     }
 

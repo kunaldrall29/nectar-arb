@@ -57,6 +57,7 @@ contract MockLendingMarket is IMorphoLike {
     error InsufficientLiquidity();
     error InsufficientCollateral();
     error ZeroAmount();
+    error RepayExceedsDebt();
 
     function marketId(MarketParams memory p) public pure returns (bytes32) {
         return keccak256(abi.encode(p));
@@ -125,10 +126,10 @@ contract MockLendingMarket is IMorphoLike {
         if (seizedAssets > pos.collateral) revert InsufficientCollateral();
 
         repaidAssets = previewLiquidation(p, seizedAssets);
-        uint256 repayApplied = repaidAssets > pos.borrowAssets ? pos.borrowAssets : repaidAssets;
-        pos.borrowAssets -= repayApplied;
+        if (repaidAssets > pos.borrowAssets) revert RepayExceedsDebt();
+        pos.borrowAssets -= repaidAssets;
         pos.collateral -= seizedAssets;
-        market[id].totalBorrow -= repayApplied;
+        market[id].totalBorrow -= repaidAssets;
 
         uint256 badDebt;
         if (pos.collateral == 0 && pos.borrowAssets > 0) {

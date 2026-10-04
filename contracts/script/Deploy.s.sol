@@ -13,7 +13,8 @@ import {PauseGuard} from "../src/PauseGuard.sol";
 import {NectarExecutor} from "../src/NectarExecutor.sol";
 
 /// @notice Deploys the Nectar testnet slice (core contracts + clearly labeled mocks) and writes
-///         deployments/<chainId>.json. Env: PRIVATE_KEY, optional GIT_COMMIT, NETWORK_NAME, TIMELOCK_DELAY.
+///         deployments/<chainId>.json. Env: PRIVATE_KEY, optional GIT_COMMIT, NETWORK_NAME,
+///         MANIFEST_NAME, TIMELOCK_DELAY.
 contract Deploy is Script {
     struct Core {
         MockERC20 debt;
@@ -145,7 +146,9 @@ contract Deploy is Script {
         vm.serializeString(r, "codehashes", hashesJson);
         string memory json = vm.serializeString(r, "markets", marketsJson);
 
-        string memory path = string.concat(vm.projectRoot(), "/../deployments/", vm.toString(block.chainid), ".json");
+        string memory path = string.concat(
+            vm.projectRoot(), "/../deployments/", vm.envOr("MANIFEST_NAME", vm.toString(block.chainid)), ".json"
+        );
         vm.writeJson(json, path);
         console2.log("manifest written", path);
     }
