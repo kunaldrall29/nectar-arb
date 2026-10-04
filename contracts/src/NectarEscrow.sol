@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.26;
+pragma solidity ^0.8.24;
 
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Ownable2Step} from "@openzeppelin/contracts/access/Ownable2Step.sol";
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IPause} from "./IPause.sol";
-import {MockERC20} from "./MockERC20.sol";
 import {
     AlreadySet,
     Expired,
@@ -19,7 +23,9 @@ import {
 /// @notice Per-maker, per-token cash. Only the quote registry can reserve, release, or consume.
 ///         Consumption sends the reserved cash to the wired executor. Unreserved withdrawals
 ///         stay available while reservations or executions are paused.
-contract NectarEscrow {
+contract NectarEscrow is ReentrancyGuard, Ownable2Step {
+    using SafeERC20 for IERC20;
+
     struct Account {
         uint256 cash;
         uint256 reserved;
@@ -37,13 +43,11 @@ contract NectarEscrow {
     IPause public immutable pause;
     address public quoteRegistry;
     address public executor;
-    address public owner;
     bool public wired;
 
     mapping(address maker => mapping(address token => Account)) public accounts;
     mapping(address token => uint256) public liabilities;
     mapping(uint256 id => Reservation) public reservations;
-    uint256 private locked;
 
     event CashDeposited(address indexed maker, address indexed token, uint256 amount, address payer);
     event CashWithdrawn(address indexed maker, address indexed token, uint256 amount, address recipient);
@@ -51,27 +55,18 @@ contract NectarEscrow {
     event CashReleased(uint256 indexed reservationId, address indexed maker, address indexed token, uint256 amount);
     event CashConsumed(uint256 indexed reservationId, address indexed maker, address indexed token, uint256 amount);
 
-    modifier nonReentrant() {
-        if (locked != 0) revert Unauthorized();
-        locked = 1;
-        _;
-        locked = 0;
-    }
-
-    constructor(address pause_) {
+    constructor(address pause_) Ownable(msg.sender) {
         if (pause_ == address(0)) revert ZeroAddress();
         pause = IPause(pause_);
-        owner = msg.sender;
     }
 
-    function wire(address quoteRegistry_, address executor_) external {
-        if (msg.sender != owner) revert Unauthorized();
+    function wire(address quoteRegistry_, address executor_) external onlyOwner {
         if (wired) revert AlreadySet();
         if (quoteRegistry_ == address(0) || executor_ == address(0)) revert ZeroAddress();
         quoteRegistry = quoteRegistry_;
         executor = executor_;
         wired = true;
-        owner = address(0);
+        renounceOwnership();
     }
 
     function accountOf(address maker, address token) external view returns (uint256 cash, uint256 reserved) {
@@ -87,9 +82,9 @@ contract NectarEscrow {
     function deposit(address token, uint256 amount, address beneficiary) external nonReentrant {
         if (token == address(0) || beneficiary == address(0)) revert ZeroAddress();
         if (amount == 0) revert ZeroAmount();
-        uint256 beforeBal = MockERC20(token).balanceOf(address(this));
-        if (!MockERC20(token).transferFrom(msg.sender, address(this), amount)) revert FeeOnTransfer();
-        uint256 received = MockERC20(token).balanceOf(address(this)) - beforeBal;
+        uint256 beforeBal = IERC20(token).balanceOf(address(this));
+        IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
+        uint256 received = IERC20(token).balanceOf(address(this)) - beforeBal;
         if (received != amount) revert FeeOnTransfer();
         accounts[beneficiary][token].cash += received;
         liabilities[token] += received;
@@ -107,7 +102,7 @@ contract NectarEscrow {
         }
         a.cash -= amount;
         liabilities[token] -= amount;
-        if (!MockERC20(token).transfer(recipient, amount)) revert InsufficientCash();
+        IERC20(token).safeTransfer(recipient, amount);
         emit CashWithdrawn(msg.sender, token, amount, recipient);
     }
 
@@ -153,7 +148,7 @@ contract NectarEscrow {
         a.reserved -= r.amount;
         a.cash -= r.amount;
         liabilities[r.token] -= r.amount;
-        if (!MockERC20(r.token).transfer(to, r.amount)) revert InsufficientCash();
+        IERC20(r.token).safeTransfer(to, r.amount);
         emit CashConsumed(id, r.maker, r.token, r.amount);
     }
 }

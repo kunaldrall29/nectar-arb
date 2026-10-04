@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.26;
+pragma solidity ^0.8.24;
 
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {Ownable2Step} from "@openzeppelin/contracts/access/Ownable2Step.sol";
+import {EIP712} from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {ECDSA} from "./ECDSA.sol";
 import {IPause} from "./IPause.sol";
 import {NectarEscrow} from "./NectarEscrow.sol";
@@ -25,7 +29,7 @@ import {
 
 /// @notice Registers EIP-712 single-fill quotes and reserves the full cashOut in escrow.
 ///         Quotes cannot be cancelled before expiry. Anyone may release an expired reservation.
-contract NectarQuotes {
+contract NectarQuotes is EIP712, ReentrancyGuard, Ownable2Step {
     enum Status {
         Unknown,
         Active,
@@ -33,17 +37,14 @@ contract NectarQuotes {
         Released
     }
 
-    bytes32 public immutable domainSeparator;
     NectarEscrow public immutable escrow;
     RehearsalMarket public immutable market;
     IPause public immutable pause;
     address public executor;
-    address public owner;
 
     mapping(address maker => mapping(uint256 nonce => bool)) public usedNonce;
     mapping(uint256 id => QuoteLib.Quote) private stored;
     mapping(uint256 id => Status) public status;
-    uint256 private locked;
 
     event QuoteReserved(
         uint256 indexed reservationId,
@@ -57,40 +58,27 @@ contract NectarQuotes {
     event QuoteConsumed(uint256 indexed reservationId, address indexed maker, address indexed token, uint256 amount);
     event QuoteReleased(uint256 indexed reservationId, address indexed maker, address indexed token, uint256 amount);
 
-    modifier nonReentrant() {
-        if (locked != 0) revert Unauthorized();
-        locked = 1;
-        _;
-        locked = 0;
-    }
-
-    constructor(address escrow_, address market_, address pause_) {
+    constructor(address escrow_, address market_, address pause_) EIP712("NectarQuotes", "1") Ownable(msg.sender) {
         if (escrow_ == address(0) || market_ == address(0) || pause_ == address(0)) revert ZeroAddress();
         escrow = NectarEscrow(escrow_);
         market = RehearsalMarket(market_);
         pause = IPause(pause_);
-        owner = msg.sender;
-        domainSeparator = keccak256(
-            abi.encode(
-                keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"),
-                keccak256(bytes("NectarQuotes")),
-                keccak256(bytes("1")),
-                block.chainid,
-                address(this)
-            )
-        );
     }
 
-    function setExecutor(address executor_) external {
-        if (msg.sender != owner) revert Unauthorized();
+    /// @notice Same EIP-712 domain the deployed rehearsal uses: name NectarQuotes, version 1.
+    function domainSeparator() public view returns (bytes32) {
+        return _domainSeparatorV4();
+    }
+
+    function setExecutor(address executor_) external onlyOwner {
         if (executor != address(0)) revert AlreadySet();
         if (executor_ == address(0)) revert ZeroAddress();
         executor = executor_;
-        owner = address(0);
+        renounceOwnership();
     }
 
     function hashTypedData(QuoteLib.Quote memory q) public view returns (bytes32) {
-        return keccak256(abi.encodePacked("\x19\x01", domainSeparator, QuoteLib.hash(q)));
+        return _hashTypedDataV4(QuoteLib.hash(q));
     }
 
     function quoteHash(uint256 id) public view returns (bytes32) {

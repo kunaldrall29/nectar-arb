@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { getAddress, isAddress, type Address } from "viem";
 import { createRuntime, explainError, loadManifest } from "./chain.ts";
 import { listJobs, openDb, publicJob, updateJob } from "./db.ts";
+import { gmxReference, officialDebt, robinhoodDeployment } from "./reference.ts";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const db = openDb(path.join(root, "api/data/nectar.db"));
@@ -38,6 +39,14 @@ app.onError((error, c) => {
     },
     status as 400,
   );
+});
+
+app.get("/v1/reference/gmx", async (c) => {
+  const body = await gmxReference();
+  return c.json({
+    meta: { environment: "reference", chain: "Arbitrum One", notTestnetFill: true },
+    ...body,
+  });
 });
 
 app.get("/health", async (c) => {
@@ -93,8 +102,15 @@ app.get("/v1/networks", async (c) => {
         status: "deployed-unconnected",
         detail:
           "Rehearsal contracts are deployed on Robinhood Chain testnet. This API session does not read that RPC, so figures are omitted. Stock-collateral settlement is not live. The market is the Nectar rehearsal fixture, not Morpho.",
+        contracts: robinhoodDeployment(),
       },
     ],
+    officialDebt: officialDebt(),
+    rehearsalDebt: {
+      symbol: manifest.debtSymbol ?? "nUSD",
+      note: "nUSD is the Nectar rehearsal debt token. It is not Paxos USDG.",
+    },
+    dune: { connected: false, reason: "No DUNE_API_KEY. The SQL file is not executed." },
     deployment: {
       ...manifest,
       audited: false,

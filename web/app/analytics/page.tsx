@@ -40,6 +40,10 @@ export default function AnalyticsPage() {
               Executable debt assumes the active quote still passes preview at the next block. It expires, and it is not a standing bid for the whole market.
               No dollar production volume is shown because this deployment has not measured one.
             </p>
+            <div className="empty" style={{ marginTop: 12 }}>
+              <strong>Dune is not connected</strong>
+              No DUNE_API_KEY is configured. analytics/queries/nectar_settlements.sql is not executed and is not a measurement.
+            </div>
           </section>
         </div>
       )}

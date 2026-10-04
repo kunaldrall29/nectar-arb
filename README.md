@@ -67,6 +67,19 @@ If the deployer has no Sepolia ETH, the command above is the deploy path the mom
 cd contracts && forge test
 ```
 
+## Sponsor and partner technologies
+
+Only integrations that the code actually calls:
+
+- **OpenZeppelin Contracts v5.6.1** — `ReentrancyGuard`, `Pausable`, `Ownable2Step`, `SafeERC20`, and `EIP712` in the Solidity sources. The Robinhood Chain testnet addresses were deployed before this change and were not redeployed, so that bytecode is the earlier build.
+- **Paxos USDG** — official debt asset reads. Robinhood testnet `0x7E955252E15c84f5768B83c41a71F9eba181802F` and Arbitrum Sepolia `0xFFC95faa3d63Cde504a05B567C600B78C0b41892`. Both return symbol USDG and 6 decimals. Rehearsal debt remains nUSD.
+- **GMX** — `GET /v1/reference/gmx` fetches `https://arbitrum-api.gmxinfra.io/prices/tickers` and the Markets screen shows `tokenAddress`, `tokenSymbol`, `minPrice`, `maxPrice`, `updatedAt`, and `timestamp` as Arbitrum One reference data, not the testnet fill.
+- **ZeroDev** — Settings builds a Kernel account client with `@zerodev/sdk` and `@zerodev/ecdsa-validator` against project `61016d2a-e0df-4350-929c-d5f2110700d1` and bundler `https://rpc.zerodev.app/api/v3/61016d2a-e0df-4350-929c-d5f2110700d1/chain/421614`.
+
+Fhenix CoFHE is not listed. `@cofhe/sdk` does not run a local encrypt/decrypt mock in this environment, and the app does not invent ciphertext. Dune is not listed. There is no `DUNE_API_KEY`. `analytics/queries/nectar_settlements.sql` is not executed.
+
+Brand assets are the official mark, compact mark, lockup, and app icons from https://nectarnetwork.fun/media-kit. Canvas `#0d0f12`, accent `#16f3a9`, Syne and DM Mono.
+
 ## Honesty notes
 
 - Combined nUSD figures in Overview are a rehearsal mark with a timestamp, not a market price and not a cross-chain balance.

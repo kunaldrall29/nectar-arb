@@ -7,9 +7,12 @@
     "start": "next start -p 3000"
   },
   "dependencies": {
+    "@zerodev/ecdsa-validator": "^5.4.9",
+    "@zerodev/sdk": "^5.5.10",
     "next": "^15.1.6",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "viem": "^2.38.6"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",

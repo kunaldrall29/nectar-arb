@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.26;
+pragma solidity ^0.8.24;
 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {IPause} from "./IPause.sol";
-import {MockERC20} from "./MockERC20.sol";
 import {NectarQuotes} from "./NectarQuotes.sol";
 import {QuoteLib} from "./QuoteLib.sol";
 import {RehearsalMarket} from "./RehearsalMarket.sol";
@@ -24,13 +26,14 @@ import {
 
 /// @notice Consumes one funded quote and liquidates the rehearsal market in the same transaction.
 ///         Any failed check reverts the whole settlement. Not audited. Not a Morpho adapter.
-contract NectarExecutor {
+contract NectarExecutor is ReentrancyGuard {
+    using SafeERC20 for IERC20;
+
     NectarQuotes public immutable quotes;
     NectarEscrowView public immutable escrow;
     RehearsalMarket public immutable market;
     IPause public immutable pause;
     address public immutable protocolFeeRecipient;
-    uint256 private locked;
 
     event LiquidationSettled(
         uint256 indexed reservationId,
@@ -49,13 +52,6 @@ contract NectarExecutor {
         address keeper,
         uint256 price
     );
-
-    modifier nonReentrant() {
-        if (locked != 0) revert Unauthorized();
-        locked = 1;
-        _;
-        locked = 0;
-    }
 
     constructor(address escrow_, address quotes_, address market_, address pause_, address protocolFeeRecipient_) {
         if (
@@ -114,22 +110,16 @@ contract NectarExecutor {
 
         quotes.consume(q.reservationId);
 
-        MockERC20 debt = MockERC20(q.debtToken);
-        MockERC20 collateral = MockERC20(q.collateralToken);
-        debt.approve(address(market), repay);
+        IERC20 debt = IERC20(q.debtToken);
+        IERC20 collateral = IERC20(q.collateralToken);
+        debt.forceApprove(address(market), repay);
         uint256 seized = market.liquidate(q.borrower, repay, seize);
-        debt.approve(address(market), 0);
+        debt.forceApprove(address(market), 0);
         if (seized != seize) revert CollateralMismatch();
-        if (!collateral.transfer(q.collateralRecipient, seized)) revert CollateralMismatch();
-        if (q.keeperCompensation > 0) {
-            if (!debt.transfer(q.keeperRecipient, q.keeperCompensation)) revert InsufficientProceeds();
-        }
-        if (q.protocolFee > 0) {
-            if (!debt.transfer(protocolFeeRecipient, q.protocolFee)) revert InsufficientProceeds();
-        }
-        if (surplus > 0) {
-            if (!debt.transfer(q.surplusRecipient, surplus)) revert InsufficientProceeds();
-        }
+        collateral.safeTransfer(q.collateralRecipient, seized);
+        if (q.keeperCompensation > 0) debt.safeTransfer(q.keeperRecipient, q.keeperCompensation);
+        if (q.protocolFee > 0) debt.safeTransfer(protocolFeeRecipient, q.protocolFee);
+        if (surplus > 0) debt.safeTransfer(q.surplusRecipient, surplus);
         if (debt.balanceOf(address(this)) != 0 || collateral.balanceOf(address(this)) != 0) revert Dust();
 
         emit LiquidationSettled(

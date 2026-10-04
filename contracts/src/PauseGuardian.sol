@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.26;
+pragma solidity ^0.8.24;
 
+import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 import {Unauthorized, ZeroAddress} from "./Errors.sol";
 
 /// @notice Guardian can pause new reservations and executions. It cannot move maker cash.
-contract PauseGuardian {
+contract PauseGuardian is Pausable {
     address public immutable guardian;
-    bool public paused;
 
     event ScopePaused(address indexed guardian, bool paused);
 
@@ -17,13 +17,13 @@ contract PauseGuardian {
 
     function pause() external {
         if (msg.sender != guardian) revert Unauthorized();
-        paused = true;
+        _pause();
         emit ScopePaused(msg.sender, true);
     }
 
     function unpause() external {
         if (msg.sender != guardian) revert Unauthorized();
-        paused = false;
+        _unpause();
         emit ScopePaused(msg.sender, false);
     }
 }

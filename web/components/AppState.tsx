@@ -145,9 +145,10 @@ function ShellInner({ children }: { children: React.ReactNode }) {
       <div className="frame">
         <aside className="rail">
           <div className="mark">
-            <div className="seal" aria-hidden><span /></div>
+            <img className="brand-mark" src="/brand/nectar-mark.svg" width={40} height={40} alt="" />
+            <img className="brand-mark-compact" src="/brand/nectar-mark-compact.svg" width={24} height={24} alt="" />
             <div>
-              <div className="word">Nectar</div>
+              <img className="lockup" src="/brand/nectar-lockup.svg" alt="Nectar" />
               <p className="scope-line">Hackathon slice · R1</p>
             </div>
           </div>
@@ -164,6 +165,10 @@ function ShellInner({ children }: { children: React.ReactNode }) {
           </nav>
           <p className="rail-foot">
             Liquidation liquidity for one rehearsal market. EVM contracts are a new build and are not audited.
+          </p>
+          <p className="credit">
+            Mark and lockup from the{" "}
+            <a href="https://nectarnetwork.fun/media-kit">Nectar media kit</a>.
           </p>
         </aside>
         <div className="main">

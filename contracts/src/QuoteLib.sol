@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.26;
+pragma solidity ^0.8.24;
 
 /// @notice EIP-712 single-fill purchase quote. Integer amounts are token base units.
 library QuoteLib {

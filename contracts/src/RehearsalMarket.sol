@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.26;
+pragma solidity ^0.8.24;
 
+import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {MockERC20} from "./MockERC20.sol";
 import {
     BadParameter,
@@ -22,7 +25,9 @@ import {
 ///         It is not Morpho, not production, and has no interest index. Health changes only
 ///         when the rehearsal oracle updates the mock price. Positions may be opened by the
 ///         oracle via `openRehearsalPosition` so a demo does not depend on a live underwater loan.
-contract RehearsalMarket {
+contract RehearsalMarket is ReentrancyGuard {
+    using SafeERC20 for IERC20;
+
     uint256 public constant ADAPTER_VERSION = 1;
     uint256 public constant MAX_QUOTE_LIFETIME = 120;
 
@@ -40,7 +45,6 @@ contract RehearsalMarket {
     uint64 public priceUpdatedAt;
     uint256 public totalSupplyAssets;
     uint256 public totalBorrowAssets;
-    uint256 private locked;
 
     struct Position {
         uint256 collateral;
@@ -62,13 +66,6 @@ contract RehearsalMarket {
         uint256 seizeAssets,
         uint256 price
     );
-
-    modifier nonReentrant() {
-        if (locked != 0) revert Unauthorized();
-        locked = 1;
-        _;
-        locked = 0;
-    }
 
     constructor(
         address debtToken_,
@@ -187,7 +184,7 @@ contract RehearsalMarket {
         p.borrowAssets += amount;
         totalBorrowAssets += amount;
         if (priceStatus() != 0 || p.borrowAssets > maxBorrow(msg.sender)) revert Unhealthy();
-        if (!debtToken.transfer(msg.sender, amount)) revert InsufficientCash();
+        IERC20(address(debtToken)).safeTransfer(msg.sender, amount);
     }
 
     /// @notice Oracle-funded fixture. Collateral and debt liquidity come from the oracle's balances
@@ -209,7 +206,7 @@ contract RehearsalMarket {
         p.borrowAssets = borrowAmount;
         totalBorrowAssets += borrowAmount;
         if (priceStatus() != 0 || p.borrowAssets > maxBorrow(borrower)) revert Unhealthy();
-        if (!debtToken.transfer(borrower, borrowAmount)) revert InsufficientCash();
+        IERC20(address(debtToken)).safeTransfer(borrower, borrowAmount);
         emit RehearsalPositionOpened(borrower, collateralAmount, borrowAmount);
     }
 
@@ -233,9 +230,9 @@ contract RehearsalMarket {
         totalBorrowAssets -= repayAssets;
 
         uint256 beforeDebt = debtToken.balanceOf(address(this));
-        if (!debtToken.transferFrom(msg.sender, address(this), repayAssets)) revert InsufficientCash();
+        IERC20(address(debtToken)).safeTransferFrom(msg.sender, address(this), repayAssets);
         if (debtToken.balanceOf(address(this)) - beforeDebt != repayAssets) revert FeeOnTransfer();
-        if (!collateralToken.transfer(msg.sender, seizeAssets)) revert CollateralMismatch();
+        IERC20(address(collateralToken)).safeTransfer(msg.sender, seizeAssets);
 
         emit Liquidated(borrower, msg.sender, repayAssets, seizeAssets, price);
         return seizeAssets;
@@ -250,7 +247,7 @@ contract RehearsalMarket {
 
     function _pull(MockERC20 token, address from, uint256 amount) internal {
         uint256 beforeBal = token.balanceOf(address(this));
-        if (!token.transferFrom(from, address(this), amount)) revert FeeOnTransfer();
+        IERC20(address(token)).safeTransferFrom(from, address(this), amount);
         if (token.balanceOf(address(this)) - beforeBal != amount) revert FeeOnTransfer();
     }
 }
