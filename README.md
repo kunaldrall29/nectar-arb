@@ -57,6 +57,10 @@ Automatic demo signing stays disabled on Sepolia. Use a wallet on chain id 42161
 
 If the deployer has no Sepolia ETH, the command above is the deploy path the moment it does. Public faucets checked for this prototype required a browser captcha or a mainnet balance, so no Sepolia deployment is claimed unless `deployments/arbitrum-sepolia.json` exists.
 
+## Robinhood Chain testnet
+
+`deployments/robinhood-testnet.json` records a rehearsal deployment on chain id 46630. RPC `https://rpc.testnet.chain.robinhood.com`. It is the same fixture, not production stock-collateral settlement, and it is not audited. The local demo API does not read that chain.
+
 ## Tests
 
 ```bash
