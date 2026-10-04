@@ -1,0 +1,19 @@
+{
+  "settled": true,
+  "borrower": "GCBBCHEG5QMG3EV47UJRUOHYQEWF5YYKVDWBI3ULWLMDAS3R4UF4B5SF",
+  "maker": "GD5HJ4XVSEM5GFEVVVZE6CLO2FDOQXZADJWOZ5Q2M2XR345I73GGZBLN",
+  "quoteId": "b51276936919126cac2116b2f51795a97010506b246a9b611c7c7254d406f231",
+  "transactions": {
+    "deposit": "4af37e7667728cf24b592a5f2cfbba28a1dd5a19f270ff6b3f8c42295a95456f",
+    "registerQuote": "4544258de5a0460fbd0cfbe8b6bf379571bed9f8df58dd505ebd5156b9ca731c",
+    "execute": "969bb59510dc037af5b5bce7d3059267cb0e5cc5e868dbca909dbaf27d05e484"
+  },
+  "receipt": {
+    "debtRepay": "100000000000",
+    "collateralAmount": "120000000000",
+    "keeperCompensation": "500000000",
+    "protocolFee": "200000000",
+    "surplus": "700000000",
+    "writeoff": "0"
+  }
+}

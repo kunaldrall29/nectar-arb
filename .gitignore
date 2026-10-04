@@ -1,0 +1,47 @@
+# Rust
+target/
+
+# Node
+node_modules/
+dist/
+.next/
+out/
+*.tsbuildinfo
+
+# Env / secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Stellar CLI identities (secret keys)
+.stellar/
+.config/stellar/
+*.toml.bak
+
+# Generated wallets with secrets
+secrets/
+*.secret
+deploy-wallet.json
+
+# Vercel
+.vercel/
+
+# Coverage
+coverage/
+*.profraw
+
+# macOS
+._*
+contracts/*/test_snapshots/
+.env.local

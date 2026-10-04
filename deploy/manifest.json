@@ -1,0 +1,38 @@
+{
+  "network": "testnet",
+  "networkPassphrase": "Test SDF Network ; September 2015",
+  "horizon": "https://horizon-testnet.stellar.org",
+  "rpc": "https://soroban-testnet.stellar.org",
+  "explorer": "https://stellar.expert/explorer/testnet",
+  "chainId": 1000,
+  "stage": "R1-stellar-testnet-slice",
+  "admin": "GD5HJ4XVSEM5GFEVVVZE6CLO2FDOQXZADJWOZ5Q2M2XR345I73GGZBLN",
+  "funded": true,
+  "deployed": true,
+  "contracts": {
+    "usdc": "CDU5BPZ4G2RWIM6X5UWMKRJEWH5F3OL5SWNNY6DR6SKZQFCTORHEGKDL",
+    "hood": "CDNG2O4IL2AP57GN2E23ECQS6ADA7WELLVLPDHDGGDVADPBU22C6GXGH",
+    "lending": "CCRJJ2TGAJ743SI5OY4AMXRWEARDKUEUL4UPFQK2QETSWN7PKQ3VG2H5",
+    "nectar": "CDDI3F3X6IC76OFK4JCXO2UXJYEPAJP43HF5GCNUTFTI3ZR6GI5QUUN3"
+  },
+  "explorers": {
+    "usdc": "https://stellar.expert/explorer/testnet/contract/CDU5BPZ4G2RWIM6X5UWMKRJEWH5F3OL5SWNNY6DR6SKZQFCTORHEGKDL",
+    "hood": "https://stellar.expert/explorer/testnet/contract/CDNG2O4IL2AP57GN2E23ECQS6ADA7WELLVLPDHDGGDVADPBU22C6GXGH",
+    "lending": "https://stellar.expert/explorer/testnet/contract/CCRJJ2TGAJ743SI5OY4AMXRWEARDKUEUL4UPFQK2QETSWN7PKQ3VG2H5",
+    "nectar": "https://stellar.expert/explorer/testnet/contract/CDDI3F3X6IC76OFK4JCXO2UXJYEPAJP43HF5GCNUTFTI3ZR6GI5QUUN3"
+  },
+  "marketKey": "0707070707070707070707070707070707070707070707070707070707070707",
+  "policy": {
+    "maxQuoteTtlSeconds": 300,
+    "decimals": 7,
+    "note": "Testnet quote TTL is 300s so a human demo can finish. Production V1 is 30–120s.",
+    "fixture": {
+      "debtRepay": "100000000000",
+      "cashOut": "101400000000",
+      "keeper": "500000000",
+      "protocolFee": "200000000",
+      "surplus": "700000000",
+      "collateral": "120000000000"
+    }
+  }
+}
