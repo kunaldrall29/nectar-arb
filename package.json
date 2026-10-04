@@ -13,6 +13,7 @@
     "indexer": "pnpm --filter @nectar/backend indexer",
     "api": "pnpm --filter @nectar/backend api",
     "agent": "pnpm --filter @nectar/backend agent",
+    "e2e:local": "pnpm --filter @nectar/backend exec tsx ../scripts/e2e-smoke.ts",
     "backend": "pnpm --filter @nectar/backend start",
     "web": "pnpm --filter @nectar/web dev",
     "build": "pnpm --filter @nectar/web build",
